@@ -6,9 +6,105 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  display: flex-block;
+  background: #fffff5;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+#topBar {
+  width: 95%;
+  display: flex;
+  justify-content: space-around;
+  margin-top: 10px;
+  align-items: center;
+}
+
+#topBarLeft {
+
+}
+
+#leftButton {
+
+}
+
+#rightButton {
+  margin-left: 30px;
+}
+
+#ScrollButtonsOutermost {
+  float: right;
+}
+
+#graph {
+  margin-top: 10px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 98%;
+  height: 380px;
+  padding: auto;
+}
+
+.largeText {
+  font-size: 15px;
+}
+
+.smallText {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.tinyText {
+  font-size: 9px;
+  font-weight: bold;
+}
+
+#bottomBar {
+  width: 98%;
+  margin: auto;
+  padding: 0px;
+  display: flex;
+  justify-content: space-around;
+  font-size: 20px;
+  display: flex-block;
+  font-size: 13px;
+}
+
+#cancelButton {
+  font-size: 15px;
+}
+
+textarea {
+  border-width: 1px;
+  border: solid black;
+  width: 120px;
+  height: 30px;
+  resize: none;
+}
+
+.finalizeForm {
+  display: flex;
+  align-items: center;
+  margin: 10px;
+}
+
+input {
+  background: gainsboro;
+  margin-left: 10px;
+  border-radius: 5px;
+  margin-top: 5px;
+  margin-bottom: 0px;
+}
+
+.inputDiv {
+  margin: 5px;
+  width: 99%;
+}
+
+button {
+  border: solid black;
+  border-width: 1px;
 }
