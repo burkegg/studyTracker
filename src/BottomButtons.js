@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Timer from './Timer';
 
 export default class BottomButtons extends Component {
   constructor(props) {
@@ -8,6 +9,7 @@ export default class BottomButtons extends Component {
       courseName:'',
       notes:'',
       assignment:'',
+      displayTime: 0,
     };
   }
 
@@ -38,14 +40,13 @@ export default class BottomButtons extends Component {
     if (this.state.courseName.length >= 1) {
       this.props.handleNewTask(courseName, assignment, notes);
     }
-    this.setState({courseName: '', assignment: '', notes: ''})
-
+    this.props.handleSubmit('some info');
   }
 
   render(){
 
-    const { recording, handleStartButton, handleStopButton, handleFinishButton, 
-            handleCancelButton, handleCancelConfirm, handleResumeButton} = this.props;
+    const { recording, handleStartButton, handleFinishButton, pullUpTime, handleStopButton,
+            handleCancelButton, handleCancelConfirm, handleResumeButton, } = this.props;
     const { width } = this.state;
     let buttonTextStyle = {
       fontSize: '20px',
@@ -58,20 +59,19 @@ export default class BottomButtons extends Component {
       return (
         <div>
           <svg width={width} height='100' x='0' y='0'>
-          <circle cx={width / 2} cy='52' r='45'fill='green' id="startButton" onClick={()=>{handleStartButton('from below!')}}/>
-          <text x={width / 2} y='55'textAnchor='middle' style={buttonTextStyle} onClick={()=>{handleStartButton('from below!')}}>START</text>
+          <g onClick={()=>{handleStartButton('from below!')}} >
+            <circle cx={width / 2} cy='52' r='45'fill='green' id="startButton" />
+            <text x={width / 2} y='55'textAnchor='middle' style={buttonTextStyle} >START</text>
+          </g>
           </svg>
         </div>
       )
     } else if (recording === 'started') {
+      // The stop button is a timer component
       return (
         <div>
-          <svg width={width} height='100' x='0' y='0'>
-          <g onClick={()=>{handleStopButton('from below!')}}>
-          <circle cx={width / 2} cy='52' r='45'fill='red' id="startButton" />
-          <text x={width / 2} y='55' textAnchor='middle' style={buttonTextStyle}>STOP</text>
-          </g>
-          </svg>
+          <Timer startTime={this.props.startTime} width={width} height='100' style={buttonTextStyle} pullUpTime={pullUpTime} handleStopButton={handleStopButton} intervalSeconds={this.props.intervalSeconds}/>
+          
         </div>
       )
     } else if (recording === 'stopped') {
@@ -106,7 +106,7 @@ export default class BottomButtons extends Component {
                 <input
                   id="enterClass"
                   value={this.state.courseName}
-                  placeHolder="class - required"
+                  placeholder="class - required"
                   onChange={this.handleCourseNameChange}
                 />
               </label>
@@ -119,7 +119,7 @@ export default class BottomButtons extends Component {
                 <input
                   id="enterAssgn"
                   value={this.state.assignment}
-                  placeHolder="assignment"
+                  placeholder="assignment"
                   onChange={this.handleAssgnChange}
                 />
               </label>
@@ -132,7 +132,7 @@ export default class BottomButtons extends Component {
                 <input
                   id="enterAssgn"
                   value={this.state.notes}
-                  placeHolder="Tags or notes?"
+                  placeholder="Tags or notes?"
                   onChange={this.handleNotesChange}
                 />
               </label>
@@ -149,16 +149,5 @@ export default class BottomButtons extends Component {
 
 
    }
-
-   // if you hit cancel, show "are you sure you want to discard this task?"
-   // if yes, go back to pre-start
-
-   // if finish, go back to pre-start
-
-  
-
-
-
   }
-
 }

@@ -30,11 +30,16 @@ export default class App extends Component {
         {id: 20, date: '2018-12-8', duration: 20, subject: 'Science', assign: 'vocab worksheet', notes: 'bestwork'},
         {id: 21, date: '2018-12-8', duration: 15, subject: 'PE', assign: 'vocab worksheet', notes: 'bestwork'},
       ],
-      recording: 'finalize',
+      recording: 'prestart',
       graphHeight: 0,
       width: 0,
+      intervalSeconds: 0,
     };
   };
+
+  apiPostPlaceholder = () => {
+    console.log('calle api placeholder function');
+  }
 
   handleScrollButtons = (e) => {
     console.log(e);
@@ -46,9 +51,10 @@ export default class App extends Component {
     return;
   }
 
-  handleStopButton = (e) => {
-    console.log(e);
-    this.setState({recording: 'stopped'})
+  handleStopButton = (intervalSeconds) => {
+    console.log(intervalSeconds);
+    this.setState({recording: 'stopped', intervalSeconds: intervalSeconds })
+
   }
 
   handleResumeButton = (e) => {
@@ -58,15 +64,17 @@ export default class App extends Component {
 
   handleFinishButton = (e) => {
     console.log(e);
-    this.setState({recording: 'finalize'})
+    this.setState({recording: 'finalize', })
   }
 
   handleCancelButton = (e) => {
     console.log(e);
+
   }
 
   handleCancelConfirm = (e) => {
     console.log(e);
+    this.setState({ startTim: 0, recording: 'prestart' })
   }
 
   handleNewTask = (courseName, assignment, notes) => {
@@ -95,8 +103,17 @@ export default class App extends Component {
     this.getGraphHeight();
   }
 
+  handleSubmit = (info) => {
+    this.setState({ recording: 'prestart', intervalSeconds: 0 })
+  }
+
+  pullUpTime = (intervalSeconds) => {
+    this.setState({ intervalSeconds: intervalSeconds }, ()=>{console.log('top state intervalSeconds are: ', this.state.intervalSeconds)})
+  }
+
   render() {
-    const { recording, data, graphHeight, width } = this.state;
+    const { recording, data, graphHeight, width, intervalSeconds } = this.state;
+    console.log('passing down', intervalSeconds, 'seconds as intervalSeconds.')
     return(
       <div>
         <div id="topBar">
@@ -120,6 +137,10 @@ export default class App extends Component {
             handleCancelConfirm={this.handleCancelConfirm}
             handleResumeButton={this.handleResumeButton}
             handleNewTask={this.handleNewTask}
+            handleTimerStop={this.handleTimerStop}
+            handleSubmit={this.handleSubmit}
+            pullUpTime={this.pullUpTime}
+            intervalSeconds={intervalSeconds}
           />
         </div>
       </div>

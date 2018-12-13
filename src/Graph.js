@@ -108,20 +108,26 @@ export default class Graph extends Component {
     } else {
       style = 'largeText';
     }
-    let dates = series[0].map((entry, idx) => {
-      let day = entry.data.date.toDateString().substring(0, 3);
-      let date = entry.data.date.getDate();
-      let month = entry.data.date.toDateString().substring(4, 7)
-     
-      return (
-        <g key={idx+'dates'}>
-        <text x={xFactor * idx + 3} y={graphHeight - 35} className={style}>{day}</text>
-        <text x={xFactor * idx + 3} y={graphHeight - 6} className={style}>{month}</text>
-        <text x={xFactor * idx + 8} y={graphHeight - 20} className={style}>{date}</text>
-        <line x1='0' y1={zero} y2={zero} x2={width} stroke='grey' strokeWidth='.5'/>
-        </g>
+
+
+    let dates = () => {
+      return series[0].map((entry, idx) => {
+        let day = entry.data.date.toDateString().substring(0, 3);
+        let date = entry.data.date.getDate();
+        let month = entry.data.date.toDateString().substring(4, 7)
+       
+        return (
+          <g key={idx+'dates'}>
+          <text x={xFactor * idx + 3} y={graphHeight - 35} className={style}>{day}</text>
+          <text x={xFactor * idx + 3} y={graphHeight - 6} className={style}>{month}</text>
+          <text x={xFactor * idx + 8} y={graphHeight - 20} className={style}>{date}</text>
+          <line x1='0' y1={zero} y2={zero} x2={width} stroke='grey' strokeWidth='.5'/>
+          </g>
         )
-    })
+      })
+    }
+
+
 
     let lines = function() {
       let lineLocs = [];
@@ -134,71 +140,76 @@ export default class Graph extends Component {
         let tempKey = loc;
         loc = zero - loc * yFactor;
         return(
-          <g>
+          <g key={idx+'line'}>
             <line x1='0' y1={loc} x2={width} y2={loc} stroke='grey' strokeWidth='0.5'/>
             <text x={width - 18} y = {loc - 5}>{`${tempKey} min`}</text>
         </g>
         )
       })
-    }();
+    };
+
     let barWidth = 25;
     if (width <= 300) {
       barWidth = xFactor;
     }
-    let bars = series.map((group, subj) => {
-      return group.map((datapoint, idx) => {
-        let size = datapoint[1] - datapoint[0];
-        let course = group.key;
-        let longKey = course.substring(0, 15);
-        let shortKey = course.substring(0, 3);
-        let midpoint = zero - (datapoint[0] + datapoint[1]) / 2 * yFactor;
-        if (size >= 20) {
-          return ( 
-            <g>
-              <rect
-              x={xFactor * idx} y={zero - (yFactor * datapoint[1])}
-                height={yFactor * (datapoint[1] - datapoint[0])}
-                width={barWidth} fill={this.colorPicker(subj)}
-                strokeWidth='.4' stroke='black' fillOpacity='0.3' rx='1' ry='1'className='graphRect' />
-              <text x={xFactor * idx + 10} y={midpoint} 
-              writingMode='tb-rl' textAnchor='middle'>
-              {longKey}
-              </text>
-            </g>
-          )
-        } else if (size >= 15) {
-          return ( 
-            <g>
-              <rect x={xFactor * idx} y={zero - (yFactor * datapoint[1])}
-                height={yFactor * (datapoint[1] - datapoint[0])}
-                width={barWidth} fill={this.colorPicker(subj)}
-                strokeWidth='.4' stroke='black' fillOpacity='0.3' rx='1' ry='1'className='graphRect' />
-              <text x={xFactor * idx + 10} y={midpoint - 15} writingMode='tb-rl'>{shortKey}</text>
-            </g>
-        )
 
-        } else if (size > 0) {
-          return ( 
-          <g>
-          <rect x={xFactor * idx} y={zero - (yFactor * datapoint[1])}
-            height={yFactor * (datapoint[1] - datapoint[0])}
-            width={barWidth} fill={this.colorPicker(subj)}
-            strokeWidth='.4' stroke='black' fillOpacity='0.3' rx='1' ry='1'className='graphRect' />
-          </g>
+
+    let bars = () => {
+      return series.map((group, subj) => {
+        return group.map((datapoint, idx) => {
+          let size = datapoint[1] - datapoint[0];
+          let course = group.key;
+          let longKey = course.substring(0, 15);
+          let shortKey = course.substring(0, 3);
+          let midpoint = zero - (datapoint[0] + datapoint[1]) / 2 * yFactor;
+          if (size >= 20) {
+            return ( 
+              <g>
+                <rect
+                x={xFactor * idx} y={zero - (yFactor * datapoint[1])}
+                  height={yFactor * (datapoint[1] - datapoint[0])}
+                  width={barWidth} fill={this.colorPicker(subj)}
+                  strokeWidth='.4' stroke='black' fillOpacity='0.3' rx='1' ry='1'className='graphRect' />
+                <text x={xFactor * idx + 10} y={midpoint} 
+                writingMode='tb-rl' textAnchor='middle'>
+                {longKey}
+                </text>
+              </g>
+            )
+          } else if (size >= 15) {
+            return ( 
+              <g>
+                <rect x={xFactor * idx} y={zero - (yFactor * datapoint[1])}
+                  height={yFactor * (datapoint[1] - datapoint[0])}
+                  width={barWidth} fill={this.colorPicker(subj)}
+                  strokeWidth='.4' stroke='black' fillOpacity='0.3' rx='1' ry='1'className='graphRect' />
+                <text x={xFactor * idx + 10} y={midpoint - 15} writingMode='tb-rl'>{shortKey}</text>
+              </g>
           )
-        }
-        
+
+          } else if (size > 0) {
+            return ( 
+            <g>
+            <rect x={xFactor * idx} y={zero - (yFactor * datapoint[1])}
+              height={yFactor * (datapoint[1] - datapoint[0])}
+              width={barWidth} fill={this.colorPicker(subj)}
+              strokeWidth='.4' stroke='black' fillOpacity='0.3' rx='1' ry='1'className='graphRect' />
+             </g>
+           )
+          }
+        })
       })
-    })
-    return(
-      <div>
-        <svg x='0' y="0" height={graphHeight} width={window.innerWidth} id='svgWindow'>
-          {bars}
-          {dates}
-          {lines}
-        </svg>
-      </div>
-      )
+    }
+
+  return(
+    <div>
+      <svg x='0' y="0" height={graphHeight} width={window.innerWidth} id='svgWindow'>
+        {bars()}
+        {dates()}
+        {lines()}
+      </svg>
+    </div>
+    )
   }
 
   colorPicker(subj) {
@@ -213,7 +224,6 @@ export default class Graph extends Component {
   componentDidMount() {
     let series = this.dataToRectLocs();
     this.setState({ series: series });
-    console.log('Inside didMount()', series);
   }
 
   render() { 
@@ -221,7 +231,6 @@ export default class Graph extends Component {
     if (this.series !== null) {
       return this.dataToRectLocs()
     }
-    
     
     return(
       <div>
