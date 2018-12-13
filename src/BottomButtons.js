@@ -40,7 +40,6 @@ export default class BottomButtons extends Component {
     if (this.state.courseName.length >= 1) {
       this.props.handleNewTask(courseName, assignment, notes);
     }
-    this.props.handleSubmit('some info');
   }
 
   render(){

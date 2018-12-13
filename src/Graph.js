@@ -31,6 +31,9 @@ export default class Graph extends Component {
     let hash = {};
     let templateDay = {};
     let allKeys = [];
+    let numToDisplay = 10;
+
+    // sort, 
 
     for (let i = 0; i < data.length; i++) {
       let subject = data[i].subject;
@@ -51,7 +54,7 @@ export default class Graph extends Component {
         hash[data[i].date] = tempDay;
       }
     }
-
+    console.log(hash);
     // set maxHeight in state
     let maxHeight = 0;
     for (let property in hash) {

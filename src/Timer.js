@@ -28,7 +28,7 @@ export default class Timer extends Component {
   }
 
   render() {
-    const { width, height, buttonTextStyle, handleStopButton, preElapsed } = this.props
+    const { width, buttonTextStyle, handleStopButton } = this.props
     let { duration, loading } = this.state;
     if (!loading) {
       return(

@@ -37,8 +37,8 @@ export default class App extends Component {
     };
   };
 
-  apiPostPlaceholder = () => {
-    console.log('calle api placeholder function');
+  apiPost = (toPost) => {
+    console.log('called api placeholder function with', toPost);
   }
 
   handleScrollButtons = (e) => {
@@ -54,7 +54,6 @@ export default class App extends Component {
   handleStopButton = (intervalSeconds) => {
     console.log(intervalSeconds);
     this.setState({recording: 'stopped', intervalSeconds: intervalSeconds })
-
   }
 
   handleResumeButton = (e) => {
@@ -79,17 +78,25 @@ export default class App extends Component {
 
   handleNewTask = (courseName, assignment, notes) => {
     console.log(courseName, assignment, notes);
-    let { data } = this.state;
+    let { data, intervalSeconds } = this.state;
     let currId = data[data.length - 1].id;
     currId += 1;
-    let date = new Date().toDateString();
+    let date = new Date();
+    let formattedDate = `${date.toDateString().slice(11)}-${date.getMonth() + 1}-${date.getDate()}`;
+    console.log(formattedDate);
     if (notes.length === 0 || notes === undefined) {
       notes = null;
     }
-    let addTask = {id: currId, date: '2018-12-8', duration: 24, subject: courseName, notes: notes};
+    let minutesTaken = Math.floor(intervalSeconds / 1);
+    if (minutesTaken < 1) {
+      return;
+    }
+  
+    let addTask = {id: currId, date: formattedDate, duration: minutesTaken, subject: courseName, notes: notes};
     data.push(addTask);
     console.log(data);
-    this.setState({ data: data });
+    this.setState({ data: data, recording: 'prestart', intervalSeconds: 0 });
+    this.apiPost('some data');
   }
 
   getGraphHeight = () => {
@@ -103,13 +110,10 @@ export default class App extends Component {
     this.getGraphHeight();
   }
 
-  handleSubmit = (info) => {
-    this.setState({ recording: 'prestart', intervalSeconds: 0 })
-  }
-
   pullUpTime = (intervalSeconds) => {
     this.setState({ intervalSeconds: intervalSeconds }, ()=>{console.log('top state intervalSeconds are: ', this.state.intervalSeconds)})
   }
+
 
   render() {
     const { recording, data, graphHeight, width, intervalSeconds } = this.state;
@@ -138,7 +142,6 @@ export default class App extends Component {
             handleResumeButton={this.handleResumeButton}
             handleNewTask={this.handleNewTask}
             handleTimerStop={this.handleTimerStop}
-            handleSubmit={this.handleSubmit}
             pullUpTime={this.pullUpTime}
             intervalSeconds={intervalSeconds}
           />
