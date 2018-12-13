@@ -7,14 +7,10 @@ export default class Graph extends Component {
     this.state = {
       maxHeight: 0,
       formatData: undefined,
+      series: null,
     };
   };
 
-  componentWillReceiveProps(nextProps) {
-    if (this.props.data !== nextProps.data) {
-      this.setState({data: this.props.data});
-    }
-  }
 
   dataToRectLocs() {
 
@@ -24,9 +20,14 @@ export default class Graph extends Component {
 
     // also sets maxHeight in state, while looking at data.
 
-    const { data } = this.props;
+    let { data, width, graphHeight } = this.props;
     let formatData = [];
-
+    if (width < 100) {
+      width = 300;
+    }
+    if (graphHeight < 100) {
+      graphHeight = 350;
+    }
     let hash = {};
     let templateDay = {};
     let allKeys = [];
@@ -52,7 +53,7 @@ export default class Graph extends Component {
     }
 
     // set maxHeight in state
-    let max = 0;
+    let maxHeight = 0;
     for (let property in hash) {
       let day = hash[property];
       let sum = 0;
@@ -60,11 +61,8 @@ export default class Graph extends Component {
       for (let subj in day) {
         sum += day[subj];
       }
-      if (sum > max) {
-        max = sum;
-      }
-      if (max >= this.state.maxHeight) {
-        this.setState({ maxHeight: max });
+      if (sum > maxHeight) {
+        maxHeight = sum;
       }
     }
 
@@ -88,20 +86,18 @@ export default class Graph extends Component {
     .order(d3.stackOrderNone)
     .offset(d3.stackOffsetNone);
     var series = stack(formatData); 
-    this.setState({ formatData: series , extent: extent });
-    return [max, series];
-  }
+    // from here on we work with 'series'
 
-  drawRects() {
+
     // take in series
     // return SVG of all rects
-    let { width, graphHeight} = this.props;
     width = width - 30;
-    let { formatData, maxHeight } = this.state;
     if (maxHeight < 60) {
       maxHeight = 70;
     }
-    let factor = (graphHeight - 50) / maxHeight;
+
+
+    let yFactor = (graphHeight - 50) / maxHeight;
     let xFactor = (width - 20) / 10;
     let zero = graphHeight - 50;
     let style;
@@ -112,13 +108,13 @@ export default class Graph extends Component {
     } else {
       style = 'largeText';
     }
-    let dates = formatData[0].map((entry, idx) => {
+    let dates = series[0].map((entry, idx) => {
       let day = entry.data.date.toDateString().substring(0, 3);
       let date = entry.data.date.getDate();
       let month = entry.data.date.toDateString().substring(4, 7)
      
       return (
-        <g>
+        <g key={idx+'dates'}>
         <text x={xFactor * idx + 3} y={graphHeight - 35} className={style}>{day}</text>
         <text x={xFactor * idx + 3} y={graphHeight - 6} className={style}>{month}</text>
         <text x={xFactor * idx + 8} y={graphHeight - 20} className={style}>{date}</text>
@@ -136,7 +132,7 @@ export default class Graph extends Component {
       }
       return lineLocs.map((loc, idx) => {
         let tempKey = loc;
-        loc = zero - loc * factor;
+        loc = zero - loc * yFactor;
         return(
           <g>
             <line x1='0' y1={loc} x2={width} y2={loc} stroke='grey' strokeWidth='0.5'/>
@@ -149,19 +145,19 @@ export default class Graph extends Component {
     if (width <= 300) {
       barWidth = xFactor;
     }
-    let bars = formatData.map((series, subj) => {
-      return series.map((datapoint, idx) => {
+    let bars = series.map((group, subj) => {
+      return group.map((datapoint, idx) => {
         let size = datapoint[1] - datapoint[0];
-        let course = series.key;
+        let course = group.key;
         let longKey = course.substring(0, 15);
         let shortKey = course.substring(0, 3);
-        let midpoint = zero - (datapoint[0] + datapoint[1]) / 2 * factor;
+        let midpoint = zero - (datapoint[0] + datapoint[1]) / 2 * yFactor;
         if (size >= 20) {
           return ( 
             <g>
               <rect
-              x={xFactor * idx} y={zero - (factor * datapoint[1])}
-                height={factor * (datapoint[1] - datapoint[0])}
+              x={xFactor * idx} y={zero - (yFactor * datapoint[1])}
+                height={yFactor * (datapoint[1] - datapoint[0])}
                 width={barWidth} fill={this.colorPicker(subj)}
                 strokeWidth='.4' stroke='black' fillOpacity='0.3' rx='1' ry='1'className='graphRect' />
               <text x={xFactor * idx + 10} y={midpoint} 
@@ -173,8 +169,8 @@ export default class Graph extends Component {
         } else if (size >= 15) {
           return ( 
             <g>
-              <rect x={xFactor * idx} y={zero - (factor * datapoint[1])}
-                height={factor * (datapoint[1] - datapoint[0])}
+              <rect x={xFactor * idx} y={zero - (yFactor * datapoint[1])}
+                height={yFactor * (datapoint[1] - datapoint[0])}
                 width={barWidth} fill={this.colorPicker(subj)}
                 strokeWidth='.4' stroke='black' fillOpacity='0.3' rx='1' ry='1'className='graphRect' />
               <text x={xFactor * idx + 10} y={midpoint - 15} writingMode='tb-rl'>{shortKey}</text>
@@ -184,8 +180,8 @@ export default class Graph extends Component {
         } else if (size > 0) {
           return ( 
           <g>
-          <rect x={xFactor * idx} y={zero - (factor * datapoint[1])}
-            height={factor * (datapoint[1] - datapoint[0])}
+          <rect x={xFactor * idx} y={zero - (yFactor * datapoint[1])}
+            height={yFactor * (datapoint[1] - datapoint[0])}
             width={barWidth} fill={this.colorPicker(subj)}
             strokeWidth='.4' stroke='black' fillOpacity='0.3' rx='1' ry='1'className='graphRect' />
           </g>
@@ -216,19 +212,20 @@ export default class Graph extends Component {
 
   componentDidMount() {
     let series = this.dataToRectLocs();
+    this.setState({ series: series });
     console.log('Inside didMount()', series);
   }
 
   render() { 
-    const { data, graphHeight, width } = this.props;
-    console.log('graph render ', data[data.length - 1])
-    const { formatData } = this.state;
-    if (formatData !== undefined) {
-      return this.drawRects()
+    const { series } = this.state;
+    if (this.series !== null) {
+      return this.dataToRectLocs()
     }
+    
+    
     return(
       <div>
-        placeholder text
+        Loading
       </div>
     )
   }

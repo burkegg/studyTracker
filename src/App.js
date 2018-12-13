@@ -78,7 +78,7 @@ export default class App extends Component {
     if (notes.length === 0 || notes === undefined) {
       notes = null;
     }
-    let addTask = {id: currId, date: date, duration: 24, subject: courseName, notes: notes};
+    let addTask = {id: currId, date: '2018-12-8', duration: 24, subject: courseName, notes: notes};
     data.push(addTask);
     console.log(data);
     this.setState({ data: data });
