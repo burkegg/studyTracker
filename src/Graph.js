@@ -12,6 +12,40 @@ export default class Graph extends Component {
   };
 
 
+  getTenDays(data) {
+        // sort by date.  iterate backwards, keeping track of idx.  when you get to the 11th date, splice out from beginning through that date
+    data = data.sort((a, b) => {
+      let aDate = new Date(a.date);
+      let bDate = new Date(b.date);
+      if (aDate < bDate) {
+        return -1;
+      } else {
+        return 1;
+      }
+    })
+
+    let idx = data.length - 1;
+    let dates = {};
+    let cutting = false;
+    while (idx >= 0) {
+      if (Object.keys(dates).length === 10 && !dates.hasOwnProperty(dates[data[idx].date])) {
+        cutting = true;
+        break;
+      }
+      dates[data[idx].date] = dates[data[idx].date] || 1;
+      idx--; 
+    }
+    if (cutting) {
+
+      data = data.slice(idx + 1);
+    }
+    console.log('in getTenDays', 'idx', idx, 'dateslength', Object.keys(dates).length);
+    console.log(data);
+
+    return data;
+    // iterate backwards
+  }
+
   dataToRectLocs() {
 
     // Takes in data as I'd expect to get it from the API and formats it correctly to get 
@@ -33,7 +67,9 @@ export default class Graph extends Component {
     let allKeys = [];
     let numToDisplay = 10;
 
-    // sort, 
+    data = this.getTenDays(data);
+
+
 
     for (let i = 0; i < data.length; i++) {
       let subject = data[i].subject;
@@ -54,7 +90,6 @@ export default class Graph extends Component {
         hash[data[i].date] = tempDay;
       }
     }
-    console.log(hash);
     // set maxHeight in state
     let maxHeight = 0;
     for (let property in hash) {
@@ -74,6 +109,7 @@ export default class Graph extends Component {
     }
     // Now make an array with each day as object, with date.
     let allDays = Object.keys(hash);
+    console.log(allDays);
     for (let i = 0; i < allDays.length; i++) {
       let storage = hash[allDays[i]];
       storage.date = new Date(allDays[i]);
@@ -115,9 +151,10 @@ export default class Graph extends Component {
 
     let dates = () => {
       return series[0].map((entry, idx) => {
-        let day = entry.data.date.toDateString().substring(0, 3);
-        let date = entry.data.date.getDate();
-        let month = entry.data.date.toDateString().substring(4, 7)
+        let dateObj = new Date(entry.data.date);
+        let day = dateObj.toDateString().substring(0, 3);
+        let date = dateObj.getDate();
+        let month = dateObj.toDateString().substring(4, 7)
        
         return (
           <g key={idx+'dates'}>
