@@ -39,7 +39,6 @@ export default class Graph extends Component {
 
       data = data.slice(idx + 1);
     }
-    console.log('in getTenDays', 'idx', idx, 'dateslength', Object.keys(dates).length);
     console.log(data);
 
     return data;
@@ -109,7 +108,6 @@ export default class Graph extends Component {
     }
     // Now make an array with each day as object, with date.
     let allDays = Object.keys(hash);
-    console.log(allDays);
     for (let i = 0; i < allDays.length; i++) {
       let storage = hash[allDays[i]];
       storage.date = new Date(allDays[i]);
@@ -126,7 +124,7 @@ export default class Graph extends Component {
     .offset(d3.stackOffsetNone);
     var series = stack(formatData); 
     // from here on we work with 'series'
-
+    console.log('series', series);
 
     // take in series
     // return SVG of all rects

@@ -8,6 +8,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   display: flex-block;
   background: #fffff5;
+  margin-left: 5px;
 }
 
 code {

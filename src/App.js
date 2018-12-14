@@ -68,21 +68,27 @@ export default class App extends Component {
 
   handleCancelButton = (e) => {
     console.log(e);
-
+    let confirmation = window.confirm('Press OK to delete your assignment.');
+    if (confirmation) {
+      console.log('we are about to cancel');
+      this.handleCancelConfirm();
+    } else {
+      console.log('we aint gonna cancel nothin');
+    }
   }
 
   handleCancelConfirm = (e) => {
     console.log(e);
-    this.setState({ startTim: 0, recording: 'prestart' })
+    this.setState({ intervalSeconds: 0, recording: 'prestart' })
   }
 
   handleNewTask = (courseName, assignment, notes) => {
     console.log(courseName, assignment, notes);
     let { data, intervalSeconds } = this.state;
     let currId = data[data.length - 1].id;
-    currId += 1;
+    
     let date = new Date();
-    let formattedDate = `${date.toDateString().slice(11)}-${date.getMonth() + 1}-${date.getDate()}`;
+    let formattedDate = `${date.toDateString().slice(11)}/${date.getMonth() + 1}/${date.getDate()}`;
     if (notes.length === 0 || notes === undefined) {
       notes = null;
     }
@@ -90,12 +96,27 @@ export default class App extends Component {
     if (minutesTaken < 1) {
       return;
     }
-  
+    // check to see if we're adding this to the same course on the same day...
+    // if so, add it to that one, and return early
+    // don't incremement currId
+
+    for (let idx = data.length - 1; idx >= 0; idx--) {
+      if (data[idx].date === formattedDate && data[idx].subject === courseName) {
+        let tempDataObj = data[idx]
+        tempDataObj.duration = tempDataObj.duration + minutesTaken;
+        tempDataObj.notes = tempDataObj.notes + notes;
+        data[idx] = tempDataObj;
+        this.setState({ data: data, recording: 'prestart', intervalSeconds: 0 });
+        return;
+      }
+    }
+
+
     let addTask = {id: currId, date: formattedDate, duration: minutesTaken, subject: courseName, notes: notes};
     data.push(addTask);
-    console.log(data);
     this.setState({ data: data, recording: 'prestart', intervalSeconds: 0 });
     this.apiPost('some data');
+    currId += 1;
   }
 
   getGraphHeight = () => {
