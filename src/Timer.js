@@ -18,8 +18,7 @@ export default class Timer extends Component {
     this.timerID = setInterval(
       ()=>{
         let interval = Math.floor((Date.now() - startTime) / 1000) + intervalSeconds;
-        console.log(Date.now(), startTime, interval);
-        this.setState({ duration: interval }, ()=>{console.log('time updated to', interval)});
+        this.setState({ duration: interval });
     }, 1000)
   }
 

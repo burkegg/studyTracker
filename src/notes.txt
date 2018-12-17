@@ -1,0 +1,31 @@
+API test commands:
+
+Locally:
+
+GET 10 days, ending at endDate:
+
+'/api/user/:userID/endDate/:endDate'
+Example:
+curl -X GET 'http://localhost:3004/api/user/:33/endDate/:2017'
+
+
+
+POST a new task for an existing user:
+
+'/api/newTask/user/:userID/'
+
+curl -X POST -h 'Content-Type: application/json' -d '{"userID":<number>, "date":<yyyy/mm/dd>, "duration":<number>, "subject":<string>, "assign":<string>, "notes":<string>}';
+
+Example:
+
+curl -X POST http://localhost:3004/api/newTask/UserID/:33/ -H 'Content-Type: application/json' -d '{"userID":33, "date":"2018/12/14", "duration":24, "subject":"English", "assign":"reading...ugh", "notes":"#crushedit"}';
+
+
+
+POST a new user:
+
+/api/newUser/
+curl -X POST -h 'Content-Type:application/json' -d '{"userName":<string>}' http://localhost:3004/api/newUser/
+
+example:
+curl -X POST -h 'Content-Type: application/json' -d '{"userName":"barbara ann"}' http://localhost:3004/api/newUser/

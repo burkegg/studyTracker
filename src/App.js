@@ -2,40 +2,32 @@ import React, { Component } from 'react';
 import ScrollButtons from './ScrollButtons';
 import Graph from './Graph.js';
 import BottomButtons from './BottomButtons';
+import axios from 'axios';
 
 export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: [
-        {id: 1, date: '2018/11/25', duration: 30, subject: 'French', assign: 'vocab worksheet', notes: 'bestwork'},
-        {id: 2, date: '2018/11/27', duration: 35, subject: 'English', assign: 'vocab worksheet', notes: 'bestwork'},
-        {id: 3, date: '2018/11/28', duration: 25, subject: 'Math', assign: 'vocab worksheet', notes: 'bestwork'},
-        {id: 4, date: '2018/11/29', duration: 15, subject: 'Science', assign: 'vocab worksheet', notes: 'bestwork'},
-        {id: 5, date: '2018/11/29', duration: 30, subject: 'English', assign: 'vocab worksheet', notes: 'bestwork'},
-        {id: 6, date: '2018/11/29', duration: 40, subject: 'French', assign: 'vocab worksheet', notes: 'bestwork'},
-        {id: 7, date: '2018/12/1', duration: 60, subject: 'History', assign: 'vocab worksheet', notes: 'bestwork'},
-        {id: 8, date: '2018/12/2', duration: 50, subject: 'Math', assign: 'vocab worksheet', notes: 'bestwork'},
-        {id: 9, date: '2018/12/3', duration: 20, subject: 'Math', assign: 'vocab worksheet', notes: 'bestwork'},
-        {id: 10, date: '2018/12/5', duration: 25, subject: 'History', assign: 'vocab worksheet', notes: 'bestwork'},
-        {id: 11, date: '2018/12/6', duration: 10, subject: 'French', assign: 'vocab worksheet', notes: 'bestwork'},
-        {id: 12, date: '2018/12/6', duration: 55, subject: 'English', assign: 'vocab worksheet', notes: 'bestwork'},
-        {id: 13, date: '2018/12/7', duration: 5, subject: 'Science', assign: 'vocab worksheet', notes: 'bestwork'},
-        {id: 14, date: '2018/12/7', duration: 20, subject: 'Math', assign: 'vocab worksheet', notes: 'bestwork'},
-        {id: 15, date: '2018/12/7', duration: 10, subject: 'History', assign: 'vocab worksheet', notes: 'bestwork'},
-        {id: 16, date: '2018/12/7', duration: 80, subject: 'French', assign: 'vocab worksheet', notes: 'bestwork'},
-        {id: 17, date: '2018/12/8', duration: 25, subject: 'French', assign: 'vocab worksheet', notes: 'bestwork'},
-        {id: 18, date: '2018/12/8', duration: 15, subject: 'English', assign: 'vocab worksheet', notes: 'bestwork'},
-        {id: 19, date: '2018/12/8', duration: 25, subject: 'Math', assign: 'vocab worksheet', notes: 'bestwork'},
-        {id: 20, date: '2018/12/8', duration: 20, subject: 'Science', assign: 'vocab worksheet', notes: 'bestwork'},
-        {id: 21, date: '2018/12/9', duration: 15, subject: 'PE', assign: 'vocab worksheet', notes: 'bestwork'},
-      ],
+      data: [],
       recording: 'prestart',
       graphHeight: 0,
       width: 0,
       intervalSeconds: 0,
     };
   };
+
+  getTasks = () => {
+    let url = '/api/tasks'
+    console.log('getting tasks updated');
+    axios.get(url)
+    .then(result => {
+      console.log(result)
+      this.setState({ data: result.data })
+    })
+    .catch(error => {
+      console.log('ERROR', error);
+    })
+  }
 
   apiPost = (toPost) => {
     console.log('called api placeholder function with', toPost);
@@ -52,7 +44,6 @@ export default class App extends Component {
   }
 
   handleStopButton = (intervalSeconds) => {
-    console.log(intervalSeconds);
     this.setState({recording: 'stopped', intervalSeconds: intervalSeconds })
   }
 
@@ -78,12 +69,10 @@ export default class App extends Component {
   }
 
   handleCancelConfirm = (e) => {
-    console.log(e);
     this.setState({ intervalSeconds: 0, recording: 'prestart' })
   }
 
   handleNewTask = (courseName, assignment, notes) => {
-    console.log(courseName, assignment, notes);
     let { data, intervalSeconds } = this.state;
     let currId = data[data.length - 1].id;
     
@@ -111,7 +100,6 @@ export default class App extends Component {
       }
     }
 
-
     let addTask = {id: currId, date: formattedDate, duration: minutesTaken, subject: courseName, notes: notes};
     data.push(addTask);
     this.setState({ data: data, recording: 'prestart', intervalSeconds: 0 });
@@ -128,16 +116,16 @@ export default class App extends Component {
 
   componentDidMount() {
     this.getGraphHeight();
+    this.getTasks();
   }
 
   pullUpTime = (intervalSeconds) => {
-    this.setState({ intervalSeconds: intervalSeconds }, ()=>{console.log('top state intervalSeconds are: ', this.state.intervalSeconds)})
+    this.setState({ intervalSeconds: intervalSeconds })
   }
 
 
   render() {
     const { recording, data, graphHeight, width, intervalSeconds } = this.state;
-    console.log('passing down', intervalSeconds, 'seconds as intervalSeconds.')
     return(
       <div>
         <div id="topBar">

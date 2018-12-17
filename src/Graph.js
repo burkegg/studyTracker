@@ -36,10 +36,8 @@ export default class Graph extends Component {
       idx--; 
     }
     if (cutting) {
-
       data = data.slice(idx + 1);
     }
-    console.log(data);
 
     return data;
     // iterate backwards
@@ -54,6 +52,11 @@ export default class Graph extends Component {
     // also sets maxHeight in state, while looking at data.
 
     let { data, width, graphHeight } = this.props;
+    console.log('data was passed to graph: ', data);
+    if (!data.length >= 0) {
+      return (
+        <div>There is no data yet</div>);
+    }
     let formatData = [];
     if (width < 100) {
       width = 300;
@@ -67,8 +70,6 @@ export default class Graph extends Component {
     let numToDisplay = 10;
 
     data = this.getTenDays(data);
-
-
 
     for (let i = 0; i < data.length; i++) {
       let subject = data[i].subject;
@@ -124,7 +125,6 @@ export default class Graph extends Component {
     .offset(d3.stackOffsetNone);
     var series = stack(formatData); 
     // from here on we work with 'series'
-    console.log('series', series);
 
     // take in series
     // return SVG of all rects
@@ -259,7 +259,12 @@ export default class Graph extends Component {
     }
   }
 
+  componentWillReceiveProps(){
+    console.log('receive props: ', this.props);
+  }
+
   componentDidMount() {
+    console.log('mounted', this.props)
     let series = this.dataToRectLocs();
     this.setState({ series: series });
   }
@@ -272,7 +277,7 @@ export default class Graph extends Component {
     
     return(
       <div>
-        Loading
+        Graph placeholder
       </div>
     )
   }
