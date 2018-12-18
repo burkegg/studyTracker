@@ -1,7 +1,5 @@
 const taskRouter = require('express').Router();
 
-let users = [];
-let userId = 0;
 let taskId = 0;
 
 let tasks = [
@@ -26,6 +24,11 @@ let tasks = [
   {id: 19, date: '2018/12/8', duration: 25, subject: 'Math', assign: 'vocab worksheet', notes: 'bestwork'},
   {id: 20, date: '2018/12/8', duration: 20, subject: 'Science', assign: 'vocab worksheet', notes: 'bestwork'},
   {id: 21, date: '2018/12/9', duration: 15, subject: 'PE', assign: 'vocab worksheet', notes: 'bestwork'},
+  {id: 22, date: '2018/12/10', duration: 25, subject: 'French', assign: 'vocab worksheet', notes: 'bestwork'},
+  {id: 23, date: '2018/12/11', duration: 15, subject: 'English', assign: 'vocab worksheet', notes: 'bestwork'},
+  {id: 24, date: '2018/12/11', duration: 25, subject: 'Math', assign: 'vocab worksheet', notes: 'bestwork'},
+  {id: 25, date: '2018/12/12', duration: 20, subject: 'Science', assign: 'vocab worksheet', notes: 'bestwork'},
+  {id: 26, date: '2018/12/12', duration: 15, subject: 'PE', assign: 'vocab worksheet', notes: 'bestwork'},
 ];
 
 
@@ -42,13 +45,14 @@ taskRouter.get('/', (req, res) => {
   let userID = req.params.userID;
   let endDate = req.params.endDate;
   console.log('inside get request', tasks);
-  let reply = {id: 22, date: '2018/12/14', duration: 15, subject: 'PE', assign: 'vocab worksheet', notes: 'bestwork'};
   res.send(JSON.stringify(tasks));
 }); 
 
 // post a task to an existing user
 taskRouter.post('/', (req, res) => {
   // put me back!   api/newTask/user/:userID/
+  // console.log(req.body);
+  console.log('POST POST POST PSOT POST POST POST')
   const userID = req.body.userID;
   const date = req.body.date;
   const duration = req.body.duration;
@@ -57,7 +61,7 @@ taskRouter.post('/', (req, res) => {
   const notes = req.body.notes;
   console.log(userID, date, duration, subject, assign, notes);
   console.log('request body', req.body);
-  res.sendStatus(404);
+  res.send(req.body);
 })
 
 module.exports = taskRouter;

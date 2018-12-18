@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const _ = require('lodash');
 const logger = require('./util/logger');
 const taskRouter = require('./api/tasks');
+const userRouter = require('./api/tasks');
 
 const app = express();
 const port = config.port;

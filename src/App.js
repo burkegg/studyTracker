@@ -3,6 +3,7 @@ import ScrollButtons from './ScrollButtons';
 import Graph from './Graph.js';
 import BottomButtons from './BottomButtons';
 import axios from 'axios';
+import * as d3 from 'd3';
 
 export default class App extends Component {
   constructor(props) {
@@ -13,16 +14,29 @@ export default class App extends Component {
       graphHeight: 0,
       width: 0,
       intervalSeconds: 0,
+      series: null,
+      maxHeight: 0,
+      userID: 333,
     };
   };
 
   getTasks = () => {
     let url = '/api/tasks'
     console.log('getting tasks updated');
+    let maxHeight = 0;
+    let series;
     axios.get(url)
     .then(result => {
-      console.log(result)
-      this.setState({ data: result.data })
+      console.log(result);
+      return this.getTenDays(result.data);
+    })
+    .then((tenDaysData) => {
+      series = this.dataToRectLocs(tenDaysData);
+      maxHeight = this.getMaxHeight(series);
+      this.setState({ series: series, maxHeight: maxHeight }, () => {
+        console.log('updated app state: ', this.state.series, this.state.maxHeight);
+      })
+      return series;
     })
     .catch(error => {
       console.log('ERROR', error);
@@ -30,8 +44,134 @@ export default class App extends Component {
   }
 
   apiPost = (toPost) => {
+    const { userID } = this.state;
+
     console.log('called api placeholder function with', toPost);
+    // param::  {date: formattedDate, duration: minutesTaken, subject: courseName, notes: notes};
+    let url = '/api/tasks'
+    axios.post(url, {
+      userID: userID,
+      date: toPost.formattedDate,
+      duration: toPost.duration,
+      subject: toPost.subject,
+      assign: toPost.notes,
+      notes: toPost.notes,
+    })
+    .then(response => {
+      console.log('response', response.data);
+    })
+    .catch(error => {
+      console.log('error on post', error);
+    })
   }
+
+  apiUpdate = (toUpdate) => {
+    const { userID } = this.state;
+    console.log('called update function with ', toUpdate);
+    let url = '/api/tasks';
+
+    axios.patch(url, {
+      userID: toUpdate.userID,
+      subject: toUpdate.subject,
+      assign: toUpdate.notes,
+      notes: toUpdate.notes,
+      date: toUpdate.formattedDate,
+      duration: toUpdate.duration,
+    })
+    .then(response => {
+      console.log('patch response', response.data);
+    })
+    .catch(error => {
+      console.log('error on patch', error);
+    })
+  }
+
+  getTenDays(data) {
+        // sort by date.  iterate backwards, keeping track of idx.  when you get to the 11th date, splice out from beginning through that date
+    data = data.sort((a, b) => {
+      let aDate = new Date(a.date);
+      let bDate = new Date(b.date);
+      if (aDate < bDate) {
+        return -1;
+      } else {
+        return 1;
+      }
+    })
+
+    let idx = data.length - 1;
+    let dates = {};
+    let cutting = false;
+    while (idx >= 0) {
+      if (Object.keys(dates).length === 10 && !dates.hasOwnProperty(dates[data[idx].date])) {
+        cutting = true;
+        break;
+      }
+      dates[data[idx].date] = dates[data[idx].date] || 1;
+      idx--; 
+    }
+    if (cutting) {
+      data = data.slice(idx + 1);
+    }
+
+    return data;
+    // iterate backwards
+  }
+
+
+
+  getMaxHeight(seriesData) {
+    let topRow = seriesData[seriesData.length - 1];
+    let maxHeight = 0;
+    for (let i = 0; i < topRow.length; i++) {
+      console.log('topRow [i][1] ', topRow[i][1]);
+      maxHeight = (topRow[i][1] > maxHeight) ? topRow[i][1] : maxHeight;
+    }
+    console.log('height i return: ', maxHeight);
+    return maxHeight;
+  }
+
+  dataToRectLocs(data) {
+    let formatData = [];
+    let hash = {};
+    let templateDay = {};
+    let allKeys = [];
+    for (let i = 0; i < data.length; i++) {
+      let subject = data[i].subject;
+      if (!templateDay.hasOwnProperty(data[subject])) {
+        templateDay[subject] = 0;
+      }
+    }
+    for (let i = 0; i < data.length; i++) {
+      if (!hash.hasOwnProperty(data[i].date)) {
+        let tempDay = Object.assign({}, templateDay);
+        let subj = data[i].subject;
+        tempDay[subj] = data[i].duration;
+        hash[data[i].date] = tempDay;
+      } else {
+        let tempDay = Object.assign({}, hash[data[i].date]);
+        tempDay[data[i].subject] = data[i].duration;
+        hash[data[i].date] = tempDay;
+      }
+    }
+    for (let key in templateDay) {
+      allKeys.push(key);
+    }
+    // Now make an array with each day as object, with date.
+    let allDays = Object.keys(hash);
+    for (let i = 0; i < allDays.length; i++) {
+      let storage = hash[allDays[i]];
+      storage.date = new Date(allDays[i]);
+      formatData.push(storage);
+    }
+    var stack = d3.stack()
+    .keys(allKeys)
+    .order(d3.stackOrderNone)
+    .offset(d3.stackOffsetNone);
+    let series = stack(formatData);
+    console.log('series', series);
+    return series;
+  }
+
 
   handleScrollButtons = (e) => {
     console.log(e);
@@ -73,9 +213,8 @@ export default class App extends Component {
   }
 
   handleNewTask = (courseName, assignment, notes) => {
-    let { data, intervalSeconds } = this.state;
-    let currId = data[data.length - 1].id;
-    
+    let { intervalSeconds, data } = this.state;
+    console.log('data received by handleNewTask()', courseName, assignment, notes);
     let date = new Date();
     let formattedDate = `${date.toDateString().slice(11)}/${date.getMonth() + 1}/${date.getDate()}`;
     if (notes.length === 0 || notes === undefined) {
@@ -89,22 +228,22 @@ export default class App extends Component {
     // if so, add it to that one, and return early
     // don't incremement currId
 
+
+    //////// GOES INTO SERVER TO PREVENT OVERWRITING  ////////////////
+
     for (let idx = data.length - 1; idx >= 0; idx--) {
       if (data[idx].date === formattedDate && data[idx].subject === courseName) {
         let tempDataObj = data[idx]
         tempDataObj.duration = tempDataObj.duration + minutesTaken;
         tempDataObj.notes = tempDataObj.notes + notes;
         data[idx] = tempDataObj;
-        this.setState({ data: data, recording: 'prestart', intervalSeconds: 0 });
+        // this.setState({ data: data, recording: 'prestart', intervalSeconds: 0 });
         return;
       }
     }
 
-    let addTask = {id: currId, date: formattedDate, duration: minutesTaken, subject: courseName, notes: notes};
-    data.push(addTask);
-    this.setState({ data: data, recording: 'prestart', intervalSeconds: 0 });
-    this.apiPost('some data');
-    currId += 1;
+    let addTask = {date: formattedDate, duration: minutesTaken, subject: courseName, notes: notes};
+    this.apiPost(addTask);
   }
 
   getGraphHeight = () => {
@@ -125,7 +264,7 @@ export default class App extends Component {
 
 
   render() {
-    const { recording, data, graphHeight, width, intervalSeconds } = this.state;
+    const { recording, series, graphHeight, width, intervalSeconds, maxHeight } = this.state;
     return(
       <div>
         <div id="topBar">
@@ -138,7 +277,7 @@ export default class App extends Component {
         </div>
 
         <div id="graph">
-          <Graph data={data} graphHeight={graphHeight} width={width}/>
+          <Graph series={series} graphHeight={graphHeight} width={width} maxHeight={maxHeight}/>
         </div>
         <div id="bottomBar">
           <BottomButtons recording={recording} 

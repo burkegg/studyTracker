@@ -11,38 +11,6 @@ export default class Graph extends Component {
     };
   };
 
-
-  getTenDays(data) {
-        // sort by date.  iterate backwards, keeping track of idx.  when you get to the 11th date, splice out from beginning through that date
-    data = data.sort((a, b) => {
-      let aDate = new Date(a.date);
-      let bDate = new Date(b.date);
-      if (aDate < bDate) {
-        return -1;
-      } else {
-        return 1;
-      }
-    })
-
-    let idx = data.length - 1;
-    let dates = {};
-    let cutting = false;
-    while (idx >= 0) {
-      if (Object.keys(dates).length === 10 && !dates.hasOwnProperty(dates[data[idx].date])) {
-        cutting = true;
-        break;
-      }
-      dates[data[idx].date] = dates[data[idx].date] || 1;
-      idx--; 
-    }
-    if (cutting) {
-      data = data.slice(idx + 1);
-    }
-
-    return data;
-    // iterate backwards
-  }
-
   dataToRectLocs() {
 
     // Takes in data as I'd expect to get it from the API and formats it correctly to get 
@@ -51,89 +19,18 @@ export default class Graph extends Component {
 
     // also sets maxHeight in state, while looking at data.
 
-    let { data, width, graphHeight } = this.props;
-    console.log('data was passed to graph: ', data);
-    if (!data.length >= 0) {
-      return (
-        <div>There is no data yet</div>);
+    let { width, graphHeight, series, maxHeight } = this.props;
+    if (series === null) {
+      return(<div>asdf</div>)
     }
-    let formatData = [];
+
     if (width < 100) {
       width = 300;
     }
     if (graphHeight < 100) {
       graphHeight = 350;
     }
-    let hash = {};
-    let templateDay = {};
-    let allKeys = [];
-    let numToDisplay = 10;
-
-    data = this.getTenDays(data);
-
-    for (let i = 0; i < data.length; i++) {
-      let subject = data[i].subject;
-      if (!templateDay.hasOwnProperty(data[subject])) {
-        templateDay[subject] = 0;
-      }
-    }
-
-    for (let i = 0; i < data.length; i++) {
-      if (!hash.hasOwnProperty(data[i].date)) {
-        let tempDay = Object.assign({}, templateDay);
-        let subj = data[i].subject;
-        tempDay[subj] = data[i].duration;
-        hash[data[i].date] = tempDay;
-      } else {
-        let tempDay = Object.assign({}, hash[data[i].date]);
-        tempDay[data[i].subject] = data[i].duration;
-        hash[data[i].date] = tempDay;
-      }
-    }
-    // set maxHeight in state
-    let maxHeight = 0;
-    for (let property in hash) {
-      let day = hash[property];
-      let sum = 0;
-      
-      for (let subj in day) {
-        sum += day[subj];
-      }
-      if (sum > maxHeight) {
-        maxHeight = sum;
-      }
-    }
-
-    for (let key in templateDay) {
-      allKeys.push(key);
-    }
-    // Now make an array with each day as object, with date.
-    let allDays = Object.keys(hash);
-    for (let i = 0; i < allDays.length; i++) {
-      let storage = hash[allDays[i]];
-      storage.date = new Date(allDays[i]);
-      formatData.push(storage);
-    }
-
-    const extent = d3.extent(data, (d) => {
-      return d.date;
-    })
-
-    var stack = d3.stack()
-    .keys(allKeys)
-    .order(d3.stackOrderNone)
-    .offset(d3.stackOffsetNone);
-    var series = stack(formatData); 
-    // from here on we work with 'series'
-
-    // take in series
-    // return SVG of all rects
-    width = width - 30;
-    if (maxHeight < 60) {
-      maxHeight = 70;
-    }
-
-
+  
     let yFactor = (graphHeight - 50) / maxHeight;
     let xFactor = (width - 20) / 10;
     let zero = graphHeight - 50;
@@ -146,14 +43,13 @@ export default class Graph extends Component {
       style = 'largeText';
     }
 
-
     let dates = () => {
       return series[0].map((entry, idx) => {
         let dateObj = new Date(entry.data.date);
         let day = dateObj.toDateString().substring(0, 3);
         let date = dateObj.getDate();
         let month = dateObj.toDateString().substring(4, 7)
-       
+
         return (
           <g key={idx+'dates'}>
           <text x={xFactor * idx + 3} y={graphHeight - 35} className={style}>{day}</text>
@@ -164,8 +60,6 @@ export default class Graph extends Component {
         )
       })
     }
-
-
 
     let lines = function() {
       let lineLocs = [];
@@ -200,7 +94,7 @@ export default class Graph extends Component {
           let longKey = course.substring(0, 15);
           let shortKey = course.substring(0, 3);
           let midpoint = zero - (datapoint[0] + datapoint[1]) / 2 * yFactor;
-          if (size >= 20) {
+          if (size >= 22) {
             return ( 
               <g>
                 <rect
@@ -214,7 +108,7 @@ export default class Graph extends Component {
                 </text>
               </g>
             )
-          } else if (size >= 15) {
+          } else if (size >= 17) {
             return ( 
               <g>
                 <rect x={xFactor * idx} y={zero - (yFactor * datapoint[1])}
@@ -259,18 +153,10 @@ export default class Graph extends Component {
     }
   }
 
-  componentWillReceiveProps(){
-    console.log('receive props: ', this.props);
-  }
-
-  componentDidMount() {
-    console.log('mounted', this.props)
-    let series = this.dataToRectLocs();
-    this.setState({ series: series });
-  }
 
   render() { 
-    const { series } = this.state;
+    const { series } = this.props;
+    console.log('series in render ', series);
     if (this.series !== null) {
       return this.dataToRectLocs()
     }
