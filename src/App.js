@@ -25,7 +25,10 @@ export default class App extends Component {
     console.log('getting tasks updated');
     let maxHeight = 0;
     let series;
-    axios.get(url)
+    axios.get(url, {
+      // this is temporary id placeholder
+      userID: 1,
+    })
     .then(result => {
       console.log(result);
       return this.getTenDays(result.data);

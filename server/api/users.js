@@ -8,3 +8,9 @@ userRouter.get('/', (req, res) => {
   console.log('getting user info');
   res.send(req.body);
 })
+
+userRouter.post('./', (req, res) => {
+  console.log('posting a new user w/ data: ', req.body);
+  
+
+})
