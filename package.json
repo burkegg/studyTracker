@@ -3,12 +3,18 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "aws-amplify": "^1.1.17",
+    "aws-amplify-react": "^2.2.4",
     "axios": "^0.18.0",
     "body-parser": "^1.18.3",
+    "cognito-express": "^2.0.14",
+    "connect-ensure-login": "^0.1.1",
     "d3": "^5.7.0",
     "lodash": "^4.17.11",
     "morgan": "^1.9.1",
     "mysql": "^2.16.0",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
     "react-scripts": "2.1.1"
