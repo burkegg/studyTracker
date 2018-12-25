@@ -1,20 +1,23 @@
 import React, { Component } from 'react';
-import ScrollButtons from './components/ScrollButtons';
+import ScrollButtons from './ScrollButtons';
 import { Route, Link } from 'react-router-dom';
-import Graph from './components/Graph';
-import BottomButtons from './components/BottomButtons';
+import Graph from './Graph.js';
+import BottomButtons from './BottomButtons';
 import axios from 'axios';
 import * as d3 from 'd3';
-import SignupForm from './components/Signup';
-import LoginForm from './components/LoginForm';
-import Main from './components/Main';
 
-export default class App extends Component {
+import React, { Component } from 'react';
+import ScrollButtons from './ScrollButtons';
+import { Route, Link } from 'react-router-dom';
+import Graph from './Graph.js';
+import BottomButtons from './BottomButtons';
+import axios from 'axios';
+import * as d3 from 'd3';
+
+export default class Main extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      loggedIn: false,
-      username: null,
       data: [],
       recording: 'prestart',
       graphHeight: 0,
@@ -26,7 +29,7 @@ export default class App extends Component {
     };
   };
 
-  updateUser = (userObject) => {
+  updateUser = () => {
     this.setState(userObject);
   }
 
