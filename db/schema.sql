@@ -4,11 +4,6 @@ CREATE DATABASE tracker;
 
 USE tracker;
 
-CREATE TABLE users (
-id INT NOT NULL AUTO_INCREMENT,
-name VARCHAR(120),
-PRIMARY KEY (id)
-);
 
 CREATE TABLE tasks (
 id INT NOT NULL AUTO_INCREMENT,
@@ -17,9 +12,8 @@ duration INT NOT NULL,
 subject VARCHAR(50),
 assignment VARCHAR(50),
 notes VARCHAR(200),
-userID INT NOT NULL,
-PRIMARY KEY (id),
-FOREIGN KEY (userID) REFERENCES USERS(id)
+userID VARCHAR(100) NOT NULL,
+PRIMARY KEY (id)
 );
 
 CREATE INDEX userIDX ON tasks (userID);

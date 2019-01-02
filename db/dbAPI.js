@@ -1,11 +1,6 @@
 const path = require('path');
 const db = require(path.join(__dirname, 'index'));
 
-let records = [
-    { id: 1, username: 'jack', password: 'secret', displayName: 'Jack', emails: [ { value: 'jack@example.com' } ] }
-  , { id: 2, username: 'jill', password: 'birthday', displayName: 'Jill', emails: [ { value: 'jill@example.com' } ] }
-];
-
 const findById = function(id, cb) {
   process.nextTick(function() {
     var idx = id - 1;
@@ -31,10 +26,13 @@ const findByUsername = function(username, cb) {
 
 
 const getTasksByUser = function (params, callback) {
+  console.log('INSIDE DB QUERY AT LEAST?!?!?!', params);
   db.query('select * from tasks where userID = ?', params, (err, data) => {
     if (err) {
+      console.log('DB ERROR*****', err);
       throw err;
     } else {
+      console.log('data inside query?', data);
       callback(data);
     }
   });

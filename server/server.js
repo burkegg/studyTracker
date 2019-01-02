@@ -1,12 +1,15 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
+const session = require('express-session')
+const dbConnection = require('./database') 
+
+const passport = require('./passport');
 const app = express()
 const PORT = 8080
-const dbConnection = require('./database');
+// Route requires
 const user = require('./routes/user')
-const session = require('express-session');
-const passport = require('./passport');
+const tasks = require('./routes/tasks');
 
 // MIDDLEWARE
 app.use(morgan('dev'))
@@ -17,33 +20,40 @@ app.use(
 )
 app.use(bodyParser.json())
 
-
+// Sessions
 app.use(
   session({
-    secret: 'running5325aw',
-    resave: false,
-    saveUninitialized: false,
+    secret: 'fraggle-rock', //pick a random string to make the hash that is generated secure
+    resave: false, //required
+    saveUninitialized: false //required
   })
 )
 
+// Passport
+app.use(passport.initialize())
+app.use(passport.session()) // calls the deserializeUser
 
-app.use(passport.initialize());
-app.use(passport.session());
-
-
-//routing
-app.use('/user', user);
-
-
-app.use((req, res, next) => {
-  console.log('req.session', req.session);
+app.use('/', (req, res, next) => {
+  console.log('session data', req.session);
   next();
 })
+
+// Routes
+app.use('/user', user)
+
+app.use('/api/tasks', tasks);
+
+
 
 // Starting Server 
 app.listen(PORT, () => {
   console.log(`App listening on PORT: ${PORT}`)
 })
+
+
+
+
+
 // const config = require('./config/config');
 // const express = require('express');
 // const path = require('path');

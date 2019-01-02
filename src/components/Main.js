@@ -6,14 +6,6 @@ import BottomButtons from './BottomButtons';
 import axios from 'axios';
 import * as d3 from 'd3';
 
-import React, { Component } from 'react';
-import ScrollButtons from './ScrollButtons';
-import { Route, Link } from 'react-router-dom';
-import Graph from './Graph.js';
-import BottomButtons from './BottomButtons';
-import axios from 'axios';
-import * as d3 from 'd3';
-
 export default class Main extends Component {
   constructor(props) {
     super(props);
@@ -26,12 +18,10 @@ export default class Main extends Component {
       series: null,
       maxHeight: 0,
       userID: 333,
+      loggedIn: false,
     };
   };
 
-  updateUser = () => {
-    this.setState(userObject);
-  }
 
   getUser = () => {
     axios.get('/user/').then(response => {
@@ -61,7 +51,7 @@ export default class Main extends Component {
     let series;
     axios.get(url, {
       // this is temporary id placeholder
-      userID: 1,
+      userID: '5c23b8cf8a615919c151786d',
     })
     .then(result => {
       console.log(result);
@@ -76,7 +66,7 @@ export default class Main extends Component {
       return series;
     })
     .catch(error => {
-      console.log('ERROR', error);
+      console.log('***ERROR***', error);
     })
   }
 
@@ -293,7 +283,7 @@ export default class Main extends Component {
   componentDidMount() {
     this.getUser();
     // this.getGraphHeight();
-    // this.getTasks();
+    this.getTasks();
   }
 
   pullUpTime = (intervalSeconds) => {
@@ -303,41 +293,36 @@ export default class Main extends Component {
 
   render() {
     const { recording, series, graphHeight, width, intervalSeconds, maxHeight } = this.state;
-    return (
+
+    return(
       <div>
-      <SignupForm />
+        <div id="topBar">
+          <div id="topBarLeft">
+            placeholder for top Left
+          </div>
+          <div id="ScrollButtonsOutermost">
+            <ScrollButtons handleScrollButtons={this.handleScrollButtons}/>
+          </div>
+        </div>
+
+        <div id="graph">
+          <Graph series={series} graphHeight={graphHeight} width={width} maxHeight={maxHeight}/>
+        </div>
+        <div id="bottomBar">
+          <BottomButtons recording={recording} 
+            handleStartButton={this.handleStartButton}
+            handleStopButton={this.handleStopButton}
+            handleFinishButton={this.handleFinishButton}
+            handleCancelButton={this.handleCancelButton}
+            handleCancelConfirm={this.handleCancelConfirm}
+            handleResumeButton={this.handleResumeButton}
+            handleNewTask={this.handleNewTask}
+            handleTimerStop={this.handleTimerStop}
+            pullUpTime={this.pullUpTime}
+            intervalSeconds={intervalSeconds}
+          />
+        </div>
       </div>
       )
-
-    // return(
-    //   <div>
-    //     <div id="topBar">
-    //       <div id="topBarLeft">
-    //         placeholder for top Left
-    //       </div>
-    //       <div id="ScrollButtonsOutermost">
-    //         <ScrollButtons handleScrollButtons={this.handleScrollButtons}/>
-    //       </div>
-    //     </div>
-
-    //     <div id="graph">
-    //       <Graph series={series} graphHeight={graphHeight} width={width} maxHeight={maxHeight}/>
-    //     </div>
-    //     <div id="bottomBar">
-    //       <BottomButtons recording={recording} 
-    //         handleStartButton={this.handleStartButton}
-    //         handleStopButton={this.handleStopButton}
-    //         handleFinishButton={this.handleFinishButton}
-    //         handleCancelButton={this.handleCancelButton}
-    //         handleCancelConfirm={this.handleCancelConfirm}
-    //         handleResumeButton={this.handleResumeButton}
-    //         handleNewTask={this.handleNewTask}
-    //         handleTimerStop={this.handleTimerStop}
-    //         pullUpTime={this.pullUpTime}
-    //         intervalSeconds={intervalSeconds}
-    //       />
-    //     </div>
-    //   </div>
-    //   )
   }
 }

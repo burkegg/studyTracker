@@ -23,24 +23,24 @@ class SignupForm extends Component {
     console.log('sign-up-form, username: ');
     console.log(this.state.username);
     //request to server here
-    axios.post('/', {
+    axios.post('/user/', {
       username: this.state.username,
       password: this.state.password
     })
       .then(response => {
         console.log(response)
-        if (response.data) {
+        if (!response.data.errmsg) {
           console.log('successful signup')
-          this.setState({
+          this.setState({ //redirect to login page
             redirectTo: '/login'
           })
         } else {
-            console.log('Sign-up error');
-            
-          }
+          console.log(response.data.errmsg);
+        }
       }).catch(error => {
-        console.log('Sign up server error: ')
-        console.log(error);
+        console.log('signup error: ')
+        console.log(error)
+
       })
   }
   render() {
