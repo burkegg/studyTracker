@@ -54,14 +54,14 @@ export default class Main extends Component {
       userID: '5c23b8cf8a615919c151786d',
     })
     .then(result => {
-      console.log(result);
+      // console.log('*** result', result);
       return this.getTenDays(result.data);
     })
     .then((tenDaysData) => {
       series = this.dataToRectLocs(tenDaysData);
       maxHeight = this.getMaxHeight(series);
       this.setState({ series: series, maxHeight: maxHeight }, () => {
-        console.log('updated app state: ', this.state.series, this.state.maxHeight);
+        console.log('updated app state: ', this.state.series, 'max height: ', this.state.maxHeight);
       })
       return series;
     })
@@ -94,7 +94,7 @@ export default class Main extends Component {
 
   apiUpdate = (toUpdate) => {
     const { userID } = this.state;
-    console.log('called update function with ', toUpdate);
+    // console.log('called update function with ', toUpdate);
     let url = '/api/tasks';
 
     axios.patch(url, {
@@ -124,22 +124,23 @@ export default class Main extends Component {
         return 1;
       }
     })
-
+    // data.forEach( point => console.log('a date::::', point.taskDate));
     let idx = data.length - 1;
     let dates = {};
     let cutting = false;
     while (idx >= 0) {
-      if (Object.keys(dates).length === 10 && !dates.hasOwnProperty(dates[data[idx].date])) {
+      if (Object.keys(dates).length === 10 && !dates.hasOwnProperty(dates[data[idx].taskDate])) {
         cutting = true;
         break;
       }
-      dates[data[idx].date] = dates[data[idx].date] || 1;
+      dates[data[idx].taskDate] = dates[data[idx].taskDate] || 1;
       idx--; 
     }
     if (cutting) {
       data = data.slice(idx + 1);
     }
-
+    // console.log('outgoing data *********');
+    // console.log(data);
     return data;
     // iterate backwards
   }
@@ -153,11 +154,12 @@ export default class Main extends Component {
       console.log('topRow [i][1] ', topRow[i][1]);
       maxHeight = (topRow[i][1] > maxHeight) ? topRow[i][1] : maxHeight;
     }
-    console.log('height i return: ', maxHeight);
+    // console.log('height i return: ', maxHeight);
     return maxHeight;
   }
 
   dataToRectLocs(data) {
+    console.log('incoming data:::', data);
     let formatData = [];
     let hash = {};
     let templateDay = {};
@@ -169,15 +171,15 @@ export default class Main extends Component {
       }
     }
     for (let i = 0; i < data.length; i++) {
-      if (!hash.hasOwnProperty(data[i].date)) {
+      if (!hash.hasOwnProperty(data[i].taskDate)) {
         let tempDay = Object.assign({}, templateDay);
         let subj = data[i].subject;
         tempDay[subj] = data[i].duration;
-        hash[data[i].date] = tempDay;
+        hash[data[i].taskDate] = tempDay;
       } else {
-        let tempDay = Object.assign({}, hash[data[i].date]);
+        let tempDay = Object.assign({}, hash[data[i].taskDate]);
         tempDay[data[i].subject] = data[i].duration;
-        hash[data[i].date] = tempDay;
+        hash[data[i].taskDate] = tempDay;
       }
     }
     for (let key in templateDay) {
