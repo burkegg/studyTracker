@@ -32,7 +32,7 @@ router.post('/', (req, res) => {
 })
 
 router.post( '/login',
-  passport.authenticate('local', { failureRedirect: '/' }),
+  passport.authenticate('local', { failureRedirect: '/login' }),
   (req, res) => {
     console.log('logged in', req.user);
     var userInfo = {

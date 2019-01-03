@@ -8,7 +8,6 @@ const passport = require('../passport');
 taskRouter.get('/',
   require('connect-ensure-login').ensureLoggedIn(),
   (req, res) => {
-  console.log('**********************');
   console.log('this is what the taskRouter sees');
   console.log(req.session.passport.user._id);
   let userID = req.session.passport.user._id;
@@ -21,7 +20,7 @@ taskRouter.get('/',
 
 // post a task to an existing user
 taskRouter.post('/',
-  passport.authenticate('local', { failureRedirect: '/' }),
+  require('connect-ensure-login').ensureLoggedIn(),
   (req, res) => {
   // put me back!   api/newTask/user/:userID/
   // console.log(req.body);
@@ -32,9 +31,15 @@ taskRouter.post('/',
   const subject = req.body.subject;
   const assign = req.body.assign;
   const notes = req.body.notes;
-  console.log(userID, date, duration, subject, assign, notes);
+  console.log('userID', userID, 'date', date, 'duration', duration, subject, assign, notes);
   console.log('request body', req.body);
-  res.send(req.body);
+  postTaskByUser([userID, date, duration, subject, assign, notes], () => {
+    console.log('====================================', userID);
+    getTasksByUser(userID, function(data){
+      res.send(data);
+    })
+  });
+  // res.send(req.body);
 })
 
 module.exports = taskRouter;

@@ -39,7 +39,8 @@ const getTasksByUser = function (params, callback) {
 };
 
 const postTaskByUser = function (params, callback) {
-  db.query('insert into tasks (taskDate, duration, subject, assignment, notes, userID) values (?, ?, ?, ?, ?, ?)', params, (err, data) => {
+  console.log('inside postTaskByUser************');
+  db.query('insert into tasks (userID, taskDate, duration, subject, assignment, notes) values (?, ?, ?, ?, ?, ?)', params, (err, data) => {
     if (err) {
       throw err;
     } else {

@@ -17,8 +17,9 @@ export default class Main extends Component {
       intervalSeconds: 0,
       series: null,
       maxHeight: 0,
-      userID: 333,
+      userID: null,
       loggedIn: false,
+      failed: false,
     };
   };
 
@@ -29,10 +30,11 @@ export default class Main extends Component {
       console.log(response.data)
       if (response.data.user) {
         console.log('Get User: There is a user saved in the server session: ')
-
+        console.log(response.data.user);
         this.setState({
           loggedIn: true,
-          username: response.data.user.username
+          username: response.data.user.username,
+          userID: response.data.user._id,
         })
       } else {
         console.log('Get user: no user');
@@ -45,13 +47,14 @@ export default class Main extends Component {
   }
 
   getTasks = () => {
+    const { userID } = this.state;
     let url = '/api/tasks'
     console.log('getting tasks updated');
     let maxHeight = 0;
     let series;
     axios.get(url, {
       // this is temporary id placeholder
-      userID: '5c23b8cf8a615919c151786d',
+      userID: userID,
     })
     .then(result => {
       // console.log('*** result', result);
@@ -67,6 +70,7 @@ export default class Main extends Component {
     })
     .catch(error => {
       console.log('***ERROR***', error);
+      alert('this is the error inside get tasks');
     })
   }
 
@@ -78,7 +82,7 @@ export default class Main extends Component {
     let url = '/api/tasks'
     axios.post(url, {
       userID: userID,
-      date: toPost.formattedDate,
+      date: toPost.date,
       duration: toPost.duration,
       subject: toPost.subject,
       assign: toPost.notes,
@@ -86,6 +90,9 @@ export default class Main extends Component {
     })
     .then(response => {
       console.log('response', response.data);
+    })
+    .then(() => {
+      this.getTasks();
     })
     .catch(error => {
       console.log('error on post', error);
@@ -97,7 +104,7 @@ export default class Main extends Component {
     // console.log('called update function with ', toUpdate);
     let url = '/api/tasks';
 
-    axios.patch(url, {
+    axios.post(url, {
       userID: toUpdate.userID,
       subject: toUpdate.subject,
       assign: toUpdate.notes,
@@ -242,7 +249,7 @@ export default class Main extends Component {
   }
 
   handleNewTask = (courseName, assignment, notes) => {
-    let { intervalSeconds, data } = this.state;
+    let { intervalSeconds, data, userID } = this.state;
     console.log('data received by handleNewTask()', courseName, assignment, notes);
     let date = new Date();
     let formattedDate = `${date.toDateString().slice(11)}/${date.getMonth() + 1}/${date.getDate()}`;
@@ -271,7 +278,7 @@ export default class Main extends Component {
       }
     }
 
-    let addTask = {date: formattedDate, duration: minutesTaken, subject: courseName, notes: notes};
+    let addTask = {userID: userID, date: formattedDate, duration: minutesTaken, subject: courseName, notes: notes};
     this.apiPost(addTask);
   }
 
