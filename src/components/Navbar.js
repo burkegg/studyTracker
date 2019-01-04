@@ -28,8 +28,8 @@ class Navbar extends Component {
 
   render() {
     const loggedIn = this.props.loggedIn;
-    console.log('navbar render, props: ')
-    console.log(this.props);
+    // console.log('navbar render, props: ')
+    // console.log(this.props);
     
     return (
       <div>
@@ -56,7 +56,7 @@ class Navbar extends Component {
           </div>
           <div className="col-4 col-mr-auto">
           <div id="top-filler"></div>
-            <h1 className="App-title">MERN Passport</h1>
+            <h1 className="App-title">Study...Tracker?</h1>
           </div>
         </header>
       </div>

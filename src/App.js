@@ -24,7 +24,7 @@ export default class App extends Component {
     this.setState(userObject);
   }
 
-  getUser = () => {
+  getUser = (username = this.state.username, password = this.state.password) => {
     axios.get('/user/').then(response => {
       //console.log('response data', response.data)
       if (response.data.user !== null && response.data.user !== undefined) {
@@ -33,7 +33,7 @@ export default class App extends Component {
         this.setState({
           loggedIn: true,
           username: response.data.user.username,
-          id: response.data.user._id,
+          userID: response.data.user._id,
         })
       } else {
         console.log('Get user: no user');
@@ -45,8 +45,35 @@ export default class App extends Component {
     })
   }
 
-  
+  handleLogin = (event) => {
+    event.preventDefault()
+    console.log('handleSubmit login')
 
+    axios
+      .post('/user/login', {
+        username: this.state.username,
+        password: this.state.password
+      })
+      .then(response => {
+        console.log('login response: ')
+        console.log(response)
+        if (response.status === 200) {
+          // update App.js state
+          this.props.updateUser({
+            loggedIn: true,
+            username: response.data.username,
+            userID: response.data.userID,
+          })
+          // update the state to redirect to home
+          this.setState({
+            redirectTo: '/'
+          })
+        }
+      }).catch(error => {
+        console.log('login error: ')
+        console.log(error);
+      })
+  }
   
 
   componentDidMount() {
@@ -58,7 +85,6 @@ export default class App extends Component {
   pullUpTime = (intervalSeconds) => {
     this.setState({ intervalSeconds: intervalSeconds })
   }
-
 
   render() {
     console.log(this.state.loggedIn, this.state.username)
@@ -73,20 +99,24 @@ export default class App extends Component {
         <Switch>
           <Route
             exact path="/"
-            render={props => <Main {...props} loggedIn={this.state.loggedIn} testProps={`test message 123`} />}
+            render={props => <Main {...props} loggedIn={this.state.loggedIn} />}
           />
           <Route
             path="/login"
             render={() =>
               <LoginForm
                 updateUser={this.updateUser}
+                handleLogin={this.handleLogin}
               />}
           />
           <Route
             path="/signup"
-            render={() =>
+            render={(props) =>
               <SignupForm
+                {...props}
                 signup={this.signup}
+                updateUser={this.updateUser}
+                getUser={this.getUser}
               />}
           />
         </Switch>

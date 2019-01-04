@@ -21,6 +21,7 @@ export default class Graph extends Component {
 
     let { width, graphHeight, series, maxHeight } = this.props;
     if (series === null) {
+      // ==========  PUT IN INSTRUCTIONS FOR NO GRAPH DATA ===============
       return(<div>asdf</div>)
     }
 

@@ -8,6 +8,7 @@ router.post('/', (req, res) => {
 
   const { username, password } = req.body
   // ADD VALIDATION
+  console.log('username', username, 'pass:', password);
   User.findOne({ username: username }, (err, user) => {
     if (err) {
       console.log('User.js post error: ', err)

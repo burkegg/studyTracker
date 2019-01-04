@@ -23,7 +23,6 @@ export default class Main extends Component {
     };
   };
 
-
   getUser = () => {
     axios.get('/user/').then(response => {
       console.log('Get user response: ')
@@ -58,19 +57,23 @@ export default class Main extends Component {
     })
     .then(result => {
       // console.log('*** result', result);
+      console.log('======== result.data', result.data)
+      if (result.data.length === 0) {return result.data}
       return this.getTenDays(result.data);
     })
     .then((tenDaysData) => {
+      if (tenDaysData.length === 0) {return []}
+      console.log('-------- tendaysdata', tenDaysData);
       series = this.dataToRectLocs(tenDaysData);
       maxHeight = this.getMaxHeight(series);
-      this.setState({ series: series, maxHeight: maxHeight }, () => {
+      this.setState({ series: series, maxHeight: maxHeight, recording: 'prestart' }, () => {
         console.log('updated app state: ', this.state.series, 'max height: ', this.state.maxHeight);
       })
       return series;
     })
     .catch(error => {
       console.log('***ERROR***', error);
-      alert('this is the error inside get tasks');
+      // alert('this is the error inside get tasks');
     })
   }
 
@@ -305,14 +308,14 @@ export default class Main extends Component {
 
     return(
       <div>
-        <div id="topBar">
+        {/*<div id="topBar">
           <div id="topBarLeft">
             placeholder for top Left
           </div>
           <div id="ScrollButtonsOutermost">
             <ScrollButtons handleScrollButtons={this.handleScrollButtons}/>
           </div>
-        </div>
+        </div>*/}
 
         <div id="graph">
           <Graph series={series} graphHeight={graphHeight} width={width} maxHeight={maxHeight}/>
