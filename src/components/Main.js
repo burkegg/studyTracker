@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ScrollButtons from './ScrollButtons';
-import { Route, Link } from 'react-router-dom';
+import { Route, Link, Redirect } from 'react-router-dom';
 import Graph from './Graph.js';
 import BottomButtons from './BottomButtons';
 import axios from 'axios';
@@ -20,13 +20,14 @@ export default class Main extends Component {
       userID: null,
       loggedIn: false,
       failed: false,
+      redirectTo: null,
     };
   };
 
   getUser = () => {
     axios.get('/user/').then(response => {
-      console.log('Get user response: ')
-      console.log(response.data)
+      // console.log('Get user response: ')
+      // console.log(response.data)
       if (response.data.user) {
         console.log('Get User: There is a user saved in the server session: ')
         console.log(response.data.user);
@@ -57,13 +58,13 @@ export default class Main extends Component {
     })
     .then(result => {
       // console.log('*** result', result);
-      console.log('======== result.data', result.data)
+      // console.log('======== result.data', result.data)
       if (result.data.length === 0) {return result.data}
       return this.getTenDays(result.data);
     })
     .then((tenDaysData) => {
       if (tenDaysData.length === 0) {return []}
-      console.log('-------- tendaysdata', tenDaysData);
+      // console.log('-------- tendaysdata', tenDaysData);
       series = this.dataToRectLocs(tenDaysData);
       maxHeight = this.getMaxHeight(series);
       this.setState({ series: series, maxHeight: maxHeight, recording: 'prestart' }, () => {
@@ -76,6 +77,8 @@ export default class Main extends Component {
       // alert('this is the error inside get tasks');
     })
   }
+
+
 
   apiPost = (toPost) => {
     const { userID } = this.state;
@@ -161,7 +164,7 @@ export default class Main extends Component {
     let topRow = seriesData[seriesData.length - 1];
     let maxHeight = 0;
     for (let i = 0; i < topRow.length; i++) {
-      console.log('topRow [i][1] ', topRow[i][1]);
+      // console.log('topRow [i][1] ', topRow[i][1]);
       maxHeight = (topRow[i][1] > maxHeight) ? topRow[i][1] : maxHeight;
     }
     // console.log('height i return: ', maxHeight);
@@ -169,7 +172,7 @@ export default class Main extends Component {
   }
 
   dataToRectLocs(data) {
-    console.log('incoming data:::', data);
+    // console.log('incoming data:::', data);
     let formatData = [];
     let hash = {};
     let templateDay = {};
@@ -207,10 +210,9 @@ export default class Main extends Component {
     .order(d3.stackOrderNone)
     .offset(d3.stackOffsetNone);
     let series = stack(formatData);
-    console.log('series', series);
+    // console.log('series', series);
     return series;
   }
-
 
   handleScrollButtons = (e) => {
     console.log(e);
@@ -283,19 +285,26 @@ export default class Main extends Component {
 
     let addTask = {userID: userID, date: formattedDate, duration: minutesTaken, subject: courseName, notes: notes};
     this.apiPost(addTask);
+    this.setState({ intervalSeconds: 0 });
   }
 
   getGraphHeight = () => {
     let element = document.getElementById("graph");
-    let graphHeight = element.clientHeight;
-    let width = element.clientWidth;
-    this.setState({ graphHeight: graphHeight, width: width });
+    if (element) {
+      let graphHeight = element.clientHeight;
+      let width = element.clientWidth;
+      console.log('width in getGraphHeight Main.js', width);
+      this.setState({ graphHeight: graphHeight, width: width });
+    }
   }
 
   componentDidMount() {
     this.getUser();
-    // this.getGraphHeight();
+    this.getGraphHeight();
     this.getTasks();
+    // if (this.props.redirectTo !== null) {
+    //   this.setState({redirectTo: this.props.redirectTo });
+    // }
   }
 
   pullUpTime = (intervalSeconds) => {
@@ -305,36 +314,42 @@ export default class Main extends Component {
 
   render() {
     const { recording, series, graphHeight, width, intervalSeconds, maxHeight } = this.state;
+    const { loggedIn } = this.props;
+    console.log('Main says loggedIn =', loggedIn);
+    if (!loggedIn) {
+      console.log('>>>>> Redirecting?!?!?!')
+      return <Redirect to={{ pathname: '/Intro' }} />
+    } else {
+      return(
+        <div>
+          {/*<div id="topBar">
+            <div id="topBarLeft">
+              placeholder for top Left
+            </div>
+            <div id="ScrollButtonsOutermost">
+              <ScrollButtons handleScrollButtons={this.handleScrollButtons}/>
+            </div>
+          </div>*/}
 
-    return(
-      <div>
-        {/*<div id="topBar">
-          <div id="topBarLeft">
-            placeholder for top Left
+          <div id="graph">
+            <Graph series={series} graphHeight={graphHeight} width={width} maxHeight={maxHeight}/>
           </div>
-          <div id="ScrollButtonsOutermost">
-            <ScrollButtons handleScrollButtons={this.handleScrollButtons}/>
+          <div id="bottomBar">
+            <BottomButtons recording={recording} 
+              handleStartButton={this.handleStartButton}
+              handleStopButton={this.handleStopButton}
+              handleFinishButton={this.handleFinishButton}
+              handleCancelButton={this.handleCancelButton}
+              handleCancelConfirm={this.handleCancelConfirm}
+              handleResumeButton={this.handleResumeButton}
+              handleNewTask={this.handleNewTask}
+              handleTimerStop={this.handleTimerStop}
+              pullUpTime={this.pullUpTime}
+              intervalSeconds={intervalSeconds}
+            />
           </div>
-        </div>*/}
-
-        <div id="graph">
-          <Graph series={series} graphHeight={graphHeight} width={width} maxHeight={maxHeight}/>
         </div>
-        <div id="bottomBar">
-          <BottomButtons recording={recording} 
-            handleStartButton={this.handleStartButton}
-            handleStopButton={this.handleStopButton}
-            handleFinishButton={this.handleFinishButton}
-            handleCancelButton={this.handleCancelButton}
-            handleCancelConfirm={this.handleCancelConfirm}
-            handleResumeButton={this.handleResumeButton}
-            handleNewTask={this.handleNewTask}
-            handleTimerStop={this.handleTimerStop}
-            pullUpTime={this.pullUpTime}
-            intervalSeconds={intervalSeconds}
-          />
-        </div>
-      </div>
-      )
+        )
+    }
   }
 }

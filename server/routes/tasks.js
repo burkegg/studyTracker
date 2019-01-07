@@ -1,6 +1,7 @@
 const taskRouter = require('express').Router();
 const { getTasksByUser, postTaskByUser } = require('../../db/dbAPI');
 const passport = require('../passport');
+const testSafety = require('../util/safety');
 // testing id:  5c27a0259e815c6609d7e53d
 
 
@@ -31,6 +32,13 @@ taskRouter.post('/',
   const subject = req.body.subject;
   const assign = req.body.assign;
   const notes = req.body.notes;
+  let allData = [userID, date, duration, subject, assign, notes];
+  console.log(allData);
+  console.log('checking safety', testSafety(allData));
+  // if (!testSafety(allData)) {
+  //   res.send('Please don\'t hack me; I\'m new!');
+  // }
+
   console.log('userID', userID, 'date', date, 'duration', duration, subject, assign, notes);
   console.log('request body', req.body);
   postTaskByUser([userID, date, duration, subject, assign, notes], () => {
@@ -41,5 +49,7 @@ taskRouter.post('/',
   });
   // res.send(req.body);
 })
+
+
 
 module.exports = taskRouter;

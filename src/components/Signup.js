@@ -10,17 +10,32 @@ class SignupForm extends Component {
       password: '',
       confirmPassword: '',
       redirect: null,
-      userID: null,
-      
+      userID: null, 
     }
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleChange = this.handleChange.bind(this)
   }
   handleChange(event) {
-    this.setState({
-      [event.target.name]: event.target.value
-    })
+    let str = event.target.value;
+    if (this.testSafety(str) && str.length <= 30) {
+      this.setState({
+        [event.target.name]: event.target.value
+      })
+    } else {
+      console.log('FORBIDDEN TEXT!!!!')
+    }
   }
+
+  testSafety(string) {
+    var regex = new RegExp('\[a-zA-Z0-9!@#$%^&*()=_+;:.,?\-]');
+    let passing = true;
+    for (let i = 0; i < string.length; i++) {
+      let letter = string[i];
+      passing = passing && regex.test(letter);
+    }
+    return passing;
+  }
+
   handleSubmit(event) {
     event.preventDefault()
     console.log('sign-up-form, username: ');
@@ -51,28 +66,41 @@ class SignupForm extends Component {
 
   render() {
     if (this.state.redirectTo) {
-      console.log('it wants to redirect');
+      // console.log('it wants to redirect');
       return <Redirect to={{ pathname: this.state.redirectTo }} />
     } else {
-
       return (
         <div className="SignupForm">
-          <h1>Signup form</h1>
-          <label htmlFor="username">Username: </label>
-          <input
-            type="text"
-            name="username"
-            value={this.state.username}
-            onChange={this.handleChange}
-          />
-          <label htmlFor="password">Password: </label>
-          <input
-            type="password"
-            name="password"
-            value={this.state.password}
-            onChange={this.handleChange}
-          />
-          <button onClick={this.handleSubmit}>Sign up</button>
+          <h2>Signup form</h2>
+          <form>
+            <div>
+              <label htmlFor="username">Username: </label>
+            </div>
+            <input
+              className="formInput"
+              type="text"
+              name="username"
+              placeholder="At least 5 characters"
+              value={this.state.username}
+              onChange={this.handleChange}
+            />
+            <div>
+                <div>
+                  <label htmlFor="password">Password: </label>
+                </div>
+            <input
+              className="formInput"
+              type="password"
+              name="password"
+              placeholder="At least 8 characters"
+              value={this.state.password}
+              onChange={this.handleChange}
+            />
+            </div>
+            <div>
+            <button id="signupButton" onClick={this.handleSubmit}>Sign up</button>
+            </div>
+          </form>
         </div>
       )
     }

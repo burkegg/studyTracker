@@ -8,7 +8,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
   display: flex-block;
   background: #fffff5;
-  margin-left: 5px;
 }
 
 code {
@@ -16,17 +15,10 @@ code {
     monospace;
 }
 
-#topBar {
-  width: 95%;
-  display: flex;
-  justify-content: space-around;
-  margin-top: 10px;
-  align-items: center;
+img {
+  max-width: 95%;
 }
 
-#topBarLeft {
-
-}
 
 #leftButton {
 
@@ -42,9 +34,9 @@ code {
 
 #graph {
   margin-top: 10px;
-  margin-left: auto;
+  margin-left: 5px;
   margin-right: auto;
-  width: 98%;
+  width: 95%;
   height: 380px;
   padding: auto;
 }
@@ -96,8 +88,10 @@ input {
   background: gainsboro;
   margin-left: 10px;
   border-radius: 5px;
-  margin-top: 5px;
-  margin-bottom: 0px;
+  margin-top: 15px;
+  margin-bottom: 20px;
+  height: 40px;
+
 }
 
 .inputDiv {
@@ -106,11 +100,20 @@ input {
 }
 
 button {
-  border: solid black;
+  border: solid DarkViolet;
+  color: black;
+  background: LightPink;
   border-width: 1px;
+  height: 40px;
+  width: 80px;
+  font-size: 1.3em;
+  border-radius: 5px;
 }
 
-
+#signupButton {
+  height: 70px;
+  margin-top: 30px;
+}
 
 
 
@@ -141,7 +144,6 @@ button {
 }
 
 .navbar {
- 
   margin-top: auto;
   
 }

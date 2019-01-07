@@ -20,6 +20,7 @@ export default class Graph extends Component {
     // also sets maxHeight in state, while looking at data.
 
     let { width, graphHeight, series, maxHeight } = this.props;
+    console.log('width in graph props', width);
     if (series === null) {
       // ==========  PUT IN INSTRUCTIONS FOR NO GRAPH DATA ===============
       return(<div>asdf</div>)
@@ -75,8 +76,8 @@ export default class Graph extends Component {
         return(
           <g key={idx+'line'}>
             <line x1='0' y1={loc} x2={width} y2={loc} stroke='grey' strokeWidth='0.5'/>
-            <text x={width - 18} y = {loc - 5}>{`${tempKey} min`}</text>
-        </g>
+            <text x={width - 30} y = {loc - 5}>{`${tempKey} m`}</text>
+          </g>
         )
       })
     };
@@ -103,7 +104,7 @@ export default class Graph extends Component {
                   height={yFactor * (datapoint[1] - datapoint[0])}
                   width={barWidth} fill={this.colorPicker(subj)}
                   strokeWidth='.4' stroke='black' fillOpacity='0.3' rx='1' ry='1'className='graphRect' />
-                <text x={xFactor * idx + 10} y={midpoint} 
+                <text x={xFactor * idx + 12} y={midpoint} 
                 writingMode='tb-rl' textAnchor='middle'>
                 {longKey}
                 </text>
@@ -116,7 +117,7 @@ export default class Graph extends Component {
                   height={yFactor * (datapoint[1] - datapoint[0])}
                   width={barWidth} fill={this.colorPicker(subj)}
                   strokeWidth='.4' stroke='black' fillOpacity='0.3' rx='1' ry='1'className='graphRect' />
-                <text x={xFactor * idx + 10} y={midpoint - 15} writingMode='tb-rl'>{shortKey}</text>
+                <text x={xFactor * idx + 12} y={midpoint - 15} writingMode='tb-rl'>{shortKey}</text>
               </g>
           )
 
@@ -133,7 +134,7 @@ export default class Graph extends Component {
         })
       })
     }
-
+   
   return(
     <div>
       <svg x='0' y="0" height={graphHeight} width={window.innerWidth} id='svgWindow'>

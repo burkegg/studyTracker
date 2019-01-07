@@ -9,6 +9,7 @@ import SignupForm from './components/Signup';
 import LoginForm from './components/LoginForm';
 import Main from './components/Main';
 import Navbar from './components/Navbar';
+import Intro from './components/Intro';
 
 export default class App extends Component {
   constructor(props) {
@@ -17,6 +18,7 @@ export default class App extends Component {
       loggedIn: false,
       username: null,
       id: null,
+      redirectTo: '/Intro',
     };
   };
 
@@ -88,18 +90,21 @@ export default class App extends Component {
 
   render() {
     console.log(this.state.loggedIn, this.state.username)
+
+    const { loggedIn, redirectTo } = this.state;
+
     return (
       <div className="App">
         <Navbar updateUser={this.updateUser} loggedIn={this.state.loggedIn} />
         {/* greet user if logged in: */}
-        {this.state.loggedIn &&
-          <p>Join the party, {this.state.username}!</p>
+         {//this.state.loggedIn &&
+        //   <p>Join the party, {this.state.username}!</p>
         }
         {/* Routes to different components */}
         <Switch>
           <Route
             exact path="/"
-            render={props => <Main {...props} loggedIn={this.state.loggedIn} />}
+            render={props => <Main {...props} loggedIn={loggedIn} />}
           />
           <Route
             path="/login"
@@ -118,6 +123,11 @@ export default class App extends Component {
                 updateUser={this.updateUser}
                 getUser={this.getUser}
               />}
+          />
+          <Route
+            path="/Intro"
+            render={() => 
+              <Intro loggedIn={loggedIn}/>}
           />
         </Switch>
       </div>

@@ -1,12 +1,19 @@
 import React, { Component } from 'react';
+import { Route, Link, Redirect } from 'react-router-dom';
+
 
 export default function Intro(props) {
-
-  return(
-    <div>
-      <h3> Study...Tracker?   ¯\_(ツ)_/¯ </h3>
-      <p>Keep track of time spent on each class.</p>
-      <img src='./toS3/example.jpg' alt="an example graph" />
-    </div>
-  )
+  if (props.loggedIn) {
+      console.log('>>>>> Redirecting?!?!?!')
+      return <Redirect to={{ pathname: '/' }} />
+  } else {
+    return(
+      <div>
+        <h3> Study...Tracker?   ¯\_(ツ)_/¯ </h3>
+        <p>Keep track of time spent on each class.</p>
+        <img src='./toS3/example.jpg' alt="an example graph" />
+        <p>"It's not procrastination if you use graphs!"</p>
+      </div>
+    )
+  }
 }

@@ -39,6 +39,7 @@ export default class BottomButtons extends Component {
     let { courseName, assignment, notes } = this.state;
     if (this.state.courseName.length >= 1) {
       this.props.handleNewTask(courseName, assignment, notes);
+      this.setState({ displayTime: 0 });
     }
   }
 

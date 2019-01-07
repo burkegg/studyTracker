@@ -29,22 +29,22 @@ class Navbar extends Component {
   render() {
     const loggedIn = this.props.loggedIn;
     // console.log('navbar render, props: ')
-    // console.log(this.props);
+    console.log('navbar says loggedIn =', loggedIn);
     
     return (
       <div>
         <header className="navbar App-header" id="nav-container">
-          <div className="col-4" >
+          <div>
             {loggedIn ? (
-              <section className="navbar-section">
+              <section className="loggedIn">
                 <Link to="#" className="btn btn-link text-secondary" onClick={this.logout}>
                 <span className="text-secondary">logout</span></Link>
               </section>
             ) : (
-                <section className="navbar-section">
-                  <Link to="/" className="btn btn-link text-secondary">
+                <section className="loggedOut">
+                  {/*<Link to="/" className="btn btn-link text-secondary">
                     <span className="text-secondary">home</span>
-                    </Link>
+                    </Link>*/}
                   <Link to="/login" className="btn btn-link text-secondary">
                     <span className="text-secondary">login</span> 
                   </Link>
@@ -55,8 +55,10 @@ class Navbar extends Component {
               )}
           </div>
           <div className="col-4 col-mr-auto">
+          {/*  
           <div id="top-filler"></div>
             <h1 className="App-title">Study...Tracker?</h1>
+          */}
           </div>
         </header>
       </div>
