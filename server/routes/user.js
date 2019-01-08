@@ -8,7 +8,6 @@ router.post('/', (req, res) => {
   console.log('user signup');
 
   const { username, password } = req.body
-  // ADD VALIDATION
 
   let checkData = [username, password];
   console.log('safety dance safety dance safety dance');
@@ -54,7 +53,6 @@ router.post( '/login',
 
 router.get('/', (req, res, next) => {
   console.log('===== user!!======')
-  // console.log(req.user)
   if (req.user) {
       res.json({ user: req.user })
   } else {

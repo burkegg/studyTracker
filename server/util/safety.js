@@ -1,6 +1,6 @@
 let testSafety = (allData) => {
   // Takes an array of strings, and tests each against the sanitizing regex
-  var regex = new RegExp('\[a-zA-Z0-9!@#$%^&*()=_+;:.,?/-]');
+  var regex = new RegExp('\[a-zA-Z0-9!@#$%^&*()=_+;":.,?/ -]');
   let passing = true;
   for (let i = 0; i < allData.length; i++) {
     let string = allData[i];

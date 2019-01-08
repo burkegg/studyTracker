@@ -23,7 +23,7 @@ export default class Graph extends Component {
     console.log('width in graph props', width);
     if (series === null) {
       // ==========  PUT IN INSTRUCTIONS FOR NO GRAPH DATA ===============
-      return(<div>asdf</div>)
+      return(<div>When you're ready to start working, just hit start!  BTW if you've studied less than 1/2 hr, things will look weird(er).  Once you hit start, it's game on.</div>)
     }
 
     if (width < 100) {
