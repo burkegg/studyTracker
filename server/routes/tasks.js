@@ -8,6 +8,7 @@ const bcrypt = require('bcryptjs');
 taskRouter.get('/',
   require('connect-ensure-login').ensureLoggedIn(),
   (req, res) => {
+    console.log('--------------------- get get get');
   let userID = req.session.passport.user._id;
   let encryptedUserID = 
   getTasksByUser(userID, function(data){

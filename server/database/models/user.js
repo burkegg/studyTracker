@@ -14,9 +14,9 @@ userSchema.methods = {
   checkPassword: function (inputPassword) {
     return bcrypt.compareSync(inputPassword, this.password)
   },
-  hashPassword: plainTextPassword => {
+  hashPassword: function (plainTextPassword) {
     return bcrypt.hashSync(plainTextPassword, 10)
-  }
+  },
 }
 
 // Define hooks for pre-saving

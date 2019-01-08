@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ScrollButtons from './ScrollButtons';
 import { Route, Link, Redirect } from 'react-router-dom';
-import Graph from './Graph.js';
+import Graph from './Graph';
 import BottomButtons from './BottomButtons';
 import axios from 'axios';
 import * as d3 from 'd3';
@@ -127,6 +127,7 @@ export default class Main extends Component {
   }
 
   getTenDays(data) {
+    if (!data) return;
         // sort by date.  iterate backwards, keeping track of idx.  when you get to the 11th date, splice out from beginning through that date
     data = data.sort((a, b) => {
       let aDate = new Date(a.date);
