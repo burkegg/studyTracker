@@ -9,8 +9,8 @@ const testSafety = require('../util/safety');
 taskRouter.get('/',
   require('connect-ensure-login').ensureLoggedIn(),
   (req, res) => {
-  console.log('this is what the taskRouter sees');
-  console.log(req.session.passport.user._id);
+  // console.log('this is what the taskRouter sees');
+  // console.log(req.session.passport.user._id);
   let userID = req.session.passport.user._id;
   //res.write('fake data');
   getTasksByUser(userID, function(data){
@@ -35,14 +35,15 @@ taskRouter.post('/',
   let allData = [userID, date, duration, subject, assign, notes];
   console.log(allData);
   console.log('checking safety', testSafety(allData));
-  // if (!testSafety(allData)) {
-  //   res.send('Please don\'t hack me; I\'m new!');
-  // }
+  if (!testSafety(allData)) {
+    res.send('Please don\'t hack me; I\'m new!');
+    return;
+  }
 
-  console.log('userID', userID, 'date', date, 'duration', duration, subject, assign, notes);
-  console.log('request body', req.body);
+  // console.log('userID', userID, 'date', date, 'duration', duration, subject, assign, notes);
+  // console.log('request body', req.body);
   postTaskByUser([userID, date, duration, subject, assign, notes], () => {
-    console.log('====================================', userID);
+    // console.log('====================================', userID);
     getTasksByUser(userID, function(data){
       res.send(data);
     })

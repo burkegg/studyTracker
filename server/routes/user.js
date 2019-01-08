@@ -2,12 +2,21 @@ const express = require('express')
 const router = express.Router()
 const User = require('../database/models/user')
 const passport = require('../passport')
+const testSafety = require('../util/safety');
 
 router.post('/', (req, res) => {
   console.log('user signup');
 
   const { username, password } = req.body
   // ADD VALIDATION
+
+  let checkData = [username, password];
+  console.log('safety dance safety dance safety dance');
+  console.log(testSafety(checkData));
+  if (!testSafety(checkData)) {
+    res.send('');
+    return;
+  }
   console.log('username', username, 'pass:', password);
   User.findOne({ username: username }, (err, user) => {
     if (err) {
@@ -45,7 +54,7 @@ router.post( '/login',
 
 router.get('/', (req, res, next) => {
   console.log('===== user!!======')
-  console.log(req.user)
+  // console.log(req.user)
   if (req.user) {
       res.json({ user: req.user })
   } else {

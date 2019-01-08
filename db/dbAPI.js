@@ -32,7 +32,7 @@ const getTasksByUser = function (params, callback) {
       console.log('DB ERROR*****', err);
       throw err;
     } else {
-      console.log('data inside query?', data);
+      console.log('data inside query?');
       callback(data);
     }
   });

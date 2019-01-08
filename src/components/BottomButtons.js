@@ -21,17 +21,38 @@ export default class BottomButtons extends Component {
 
   handleCourseNameChange = (e) => {
     e.preventDefault();
-    this.setState({ courseName: e.target.value })
+    if (this.safetyCheck(e.target.value)) {
+      this.setState({ courseName: e.target.value })
+    }
   }
 
   handleAssgnChange = (e) => {
     e.preventDefault();
-    this.setState({assignment: e.target.value });
+    if (this.safetyCheck(e.target.value)){
+      this.setState({assignment: e.target.value });
+    }
   }
 
   handleNotesChange = (e) => {
     e.preventDefault();
-    this.setState({notes: e.target.value });
+    if (this.safetyCheck(e.target.value)){
+      this.setState({notes: e.target.value });
+    }
+  }
+
+  safetyCheck = (string) => {
+    // Takes an array of strings, and tests each against the sanitizing regex
+    var regex = new RegExp('\[a-zA-Z0-9!@#$%^&*()=_+;":.,?/ -]');
+    let passing = true;
+    for (let j = 0; j < string.length; j++) {
+      let letter = string[j];
+      passing = passing && regex.test(letter);
+      if (!passing) {
+        console.log('THIS FAILED SAFETY', string[j]);
+        return false;
+      }
+    }
+    return passing;
   }
 
   handleSubmit = (e) => {
