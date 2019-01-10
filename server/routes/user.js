@@ -10,8 +10,8 @@ router.post('/', (req, res) => {
   const { username, password } = req.body
 
   let checkData = [username, password];
-  console.log('safety dance safety dance safety dance');
-  console.log(testSafety(checkData));
+  // console.log('safety dance safety dance safety dance');
+  // console.log(testSafety(checkData));
   if (!testSafety(checkData)) {
     res.send('');
     return;
