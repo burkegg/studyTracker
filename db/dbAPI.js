@@ -2,7 +2,7 @@ const path = require('path');
 const db = require(path.join(__dirname, 'index'));
 
 const findById = function(id, cb) {
-  console.log('------- insdie finedById')
+  console.log('------- insdie fin dById')
   process.nextTick(function() {
     var idx = id - 1;
     if (records[idx]) {

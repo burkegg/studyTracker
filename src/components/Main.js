@@ -49,7 +49,7 @@ export default class Main extends Component {
   getTasks = () => {
     const { userID } = this.state;
     let url = '/api/tasks'
-    console.log('getting tasks updated');
+    console.log('getting tasks');
     let maxHeight = 0;
     let series;
     axios.get(url, {
@@ -57,14 +57,13 @@ export default class Main extends Component {
       userID: userID,
     })
     .then(result => {
-      // console.log('*** result', result);
-      // console.log('======== result.data', result.data)
+      console.log('*** result', result);
       if (result.data.length === 0) {return result.data}
       return this.getTenDays(result.data);
     })
     .then((tenDaysData) => {
       if (tenDaysData.length === 0) {return []}
-      // console.log('-------- tendaysdata', tenDaysData);
+      console.log('-------- tendaysdata', tenDaysData);
       series = this.dataToRectLocs(tenDaysData);
       maxHeight = this.getMaxHeight(series);
       this.setState({ series: series, maxHeight: maxHeight, recording: 'prestart' }, () => {
@@ -173,7 +172,7 @@ export default class Main extends Component {
   }
 
   dataToRectLocs(data) {
-    // console.log('incoming data:::', data);
+    console.log('incoming data MAIN dataToRectLocs:', data);
     let formatData = [];
     let hash = {};
     let templateDay = {};
@@ -211,7 +210,7 @@ export default class Main extends Component {
     .order(d3.stackOrderNone)
     .offset(d3.stackOffsetNone);
     let series = stack(formatData);
-    // console.log('series', series);
+    console.log('series in MAIN MAIN MAIN', series);
     return series;
   }
 
@@ -300,7 +299,7 @@ export default class Main extends Component {
   }
 
   componentDidMount() {
-    this.getUser();
+    // this.getUser();
     this.getGraphHeight();
     this.getTasks();
     // if (this.props.redirectTo !== null) {

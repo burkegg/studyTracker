@@ -13,7 +13,7 @@ router.post('/', (req, res) => {
   // console.log('safety dance safety dance safety dance');
   // console.log(testSafety(checkData));
   if (!testSafety(checkData)) {
-    res.send('');
+    res.send('failed safety check');
     return;
   }
   console.log('username', username, 'pass:', password);
@@ -27,11 +27,12 @@ router.post('/', (req, res) => {
       })
     }
     else {
-      console.log('user not found');
+      console.log('user not found trying to save');
       const newUser = new User({
           username: username,
           password: password
       })
+      console.log('NEW USER MADE', newUser);
       newUser.save((err, savedUser) => {
           if (err) return res.json(err)
           res.json(savedUser)

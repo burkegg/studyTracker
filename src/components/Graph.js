@@ -20,6 +20,7 @@ export default class Graph extends Component {
     // also sets maxHeight in state, while looking at data.
 
     let { width, graphHeight, series, maxHeight } = this.props;
+    console.log('series *****', series);
     console.log('width in graph props', width);
     if (series === null) {
       // ==========  PUT IN INSTRUCTIONS FOR NO GRAPH DATA ===============
@@ -48,6 +49,7 @@ export default class Graph extends Component {
     let dates = () => {
       return series[0].map((entry, idx) => {
         let dateObj = new Date(entry.data.date);
+        console.log('this is the date aobject', dateObj)
         let day = dateObj.toDateString().substring(0, 3);
         let date = dateObj.getDate();
         let month = dateObj.toDateString().substring(4, 7)
