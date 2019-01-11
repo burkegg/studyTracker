@@ -26,18 +26,13 @@ export default class Main extends Component {
 
   getUser = () => {
     axios.get('/user/').then(response => {
-      // console.log('Get user response: ')
-      // console.log(response.data)
       if (response.data.user) {
-        console.log('Get User: There is a user saved in the server session: ')
-        console.log(response.data.user);
         this.setState({
           loggedIn: true,
           username: response.data.user.username,
           userID: response.data.user._id,
         })
       } else {
-        console.log('Get user: no user');
         this.setState({
           loggedIn: false,
           username: null
@@ -49,7 +44,6 @@ export default class Main extends Component {
   getTasks = () => {
     const { userID } = this.state;
     let url = '/api/tasks'
-    console.log('getting tasks');
     let maxHeight = 0;
     let series;
     axios.get(url, {
@@ -57,34 +51,25 @@ export default class Main extends Component {
       userID: userID,
     })
     .then(result => {
-      console.log('*** result', result);
       if (result.data.length === 0) {return result.data}
       return this.getTenDays(result.data);
     })
     .then((tenDaysData) => {
       if (tenDaysData.length === 0) {return []}
-      console.log('-------- tendaysdata', tenDaysData);
       series = this.dataToRectLocs(tenDaysData);
       maxHeight = this.getMaxHeight(series);
-      this.setState({ series: series, maxHeight: maxHeight, recording: 'prestart' }, () => {
-        console.log('updated app state: ', this.state.series, 'max height: ', this.state.maxHeight);
-      })
+      this.setState({ series: series, maxHeight: maxHeight, recording: 'prestart' });
       return series;
     })
     .catch(error => {
-      console.log('***ERROR***', error);
-      // alert('this is the error inside get tasks');
+      console.log('Error getting tasks from server:', error);
     })
   }
 
-
-
   apiPost = (toPost) => {
     const { userID } = this.state;
-
-    console.log('called api placeholder function with', toPost);
-    // param::  {date: formattedDate, duration: minutesTaken, subject: courseName, notes: notes};
     let url = '/api/tasks'
+    toPost.duration = Math.Ceil(toPost.duration / 60);
     axios.post(url, {
       userID: userID,
       date: toPost.date,
@@ -92,9 +77,6 @@ export default class Main extends Component {
       subject: toPost.subject,
       assign: toPost.notes,
       notes: toPost.notes,
-    })
-    .then(response => {
-      console.log('response', response.data);
     })
     .then(() => {
       this.getTasks();
@@ -106,7 +88,6 @@ export default class Main extends Component {
 
   apiUpdate = (toUpdate) => {
     const { userID } = this.state;
-    // console.log('called update function with ', toUpdate);
     let url = '/api/tasks';
 
     axios.post(url, {
@@ -117,9 +98,6 @@ export default class Main extends Component {
       date: toUpdate.formattedDate,
       duration: toUpdate.duration,
     })
-    .then(response => {
-      console.log('patch response', response.data);
-    })
     .catch(error => {
       console.log('error on patch', error);
     })
@@ -127,7 +105,6 @@ export default class Main extends Component {
 
   getTenDays(data) {
     if (!data) return;
-        // sort by date.  iterate backwards, keeping track of idx.  when you get to the 11th date, splice out from beginning through that date
     data = data.sort((a, b) => {
       let aDate = new Date(a.date);
       let bDate = new Date(b.date);
@@ -137,7 +114,6 @@ export default class Main extends Component {
         return 1;
       }
     })
-    // data.forEach( point => console.log('a date::::', point.taskDate));
     let idx = data.length - 1;
     let dates = {};
     let cutting = false;
@@ -152,10 +128,7 @@ export default class Main extends Component {
     if (cutting) {
       data = data.slice(idx + 1);
     }
-    // console.log('outgoing data *********');
-    // console.log(data);
     return data;
-    // iterate backwards
   }
 
 
@@ -164,15 +137,12 @@ export default class Main extends Component {
     let topRow = seriesData[seriesData.length - 1];
     let maxHeight = 0;
     for (let i = 0; i < topRow.length; i++) {
-      // console.log('topRow [i][1] ', topRow[i][1]);
       maxHeight = (topRow[i][1] > maxHeight) ? topRow[i][1] : maxHeight;
     }
-    // console.log('height i return: ', maxHeight);
     return maxHeight;
   }
 
   dataToRectLocs(data) {
-    console.log('incoming data MAIN dataToRectLocs:', data);
     let formatData = [];
     let hash = {};
     let templateDay = {};
@@ -198,7 +168,7 @@ export default class Main extends Component {
     for (let key in templateDay) {
       allKeys.push(key);
     }
-    // Now make an array with each day as object, with date.
+    // make an array with each day as object, with date.
     let allDays = Object.keys(hash);
     for (let i = 0; i < allDays.length; i++) {
       let storage = hash[allDays[i]];
@@ -210,16 +180,13 @@ export default class Main extends Component {
     .order(d3.stackOrderNone)
     .offset(d3.stackOffsetNone);
     let series = stack(formatData);
-    console.log('series in MAIN MAIN MAIN', series);
     return series;
   }
 
   handleScrollButtons = (e) => {
-    console.log(e);
     return;
   }
   handleStartButton = (e) => {
-    console.log(e);
     this.setState({recording: 'started'})
     return;
   }
@@ -229,24 +196,18 @@ export default class Main extends Component {
   }
 
   handleResumeButton = (e) => {
-    console.log(e);
     this.setState({ recording: 'started'})
   }
 
   handleFinishButton = (e) => {
-    console.log(e);
     this.setState({recording: 'finalize', })
   }
 
   handleCancelButton = (e) => {
-    console.log(e);
     let confirmation = window.confirm('Press OK to delete your assignment.');
     if (confirmation) {
-      console.log('we are about to cancel');
       this.handleCancelConfirm();
-    } else {
-      console.log('we aint gonna cancel nothin');
-    }
+    } 
   }
 
   handleCancelConfirm = (e) => {
@@ -255,7 +216,6 @@ export default class Main extends Component {
 
   handleNewTask = (courseName, assignment, notes) => {
     let { intervalSeconds, data, userID } = this.state;
-    console.log('data received by handleNewTask()', courseName, assignment, notes);
     let date = new Date();
     let formattedDate = `${date.toDateString().slice(11)}/${date.getMonth() + 1}/${date.getDate()}`;
     if (notes.length === 0 || notes === undefined) {
@@ -269,16 +229,12 @@ export default class Main extends Component {
     // if so, add it to that one, and return early
     // don't incremement currId
 
-
-    //////// GOES INTO SERVER TO PREVENT OVERWRITING  ////////////////
-
     for (let idx = data.length - 1; idx >= 0; idx--) {
       if (data[idx].date === formattedDate && data[idx].subject === courseName) {
         let tempDataObj = data[idx]
         tempDataObj.duration = tempDataObj.duration + minutesTaken;
         tempDataObj.notes = tempDataObj.notes + notes;
         data[idx] = tempDataObj;
-        // this.setState({ data: data, recording: 'prestart', intervalSeconds: 0 });
         return;
       }
     }
@@ -293,7 +249,6 @@ export default class Main extends Component {
     if (element) {
       let graphHeight = element.clientHeight;
       let width = element.clientWidth;
-      console.log('width in getGraphHeight Main.js', width);
       this.setState({ graphHeight: graphHeight, width: width });
     }
   }
@@ -302,9 +257,7 @@ export default class Main extends Component {
     // this.getUser();
     this.getGraphHeight();
     this.getTasks();
-    // if (this.props.redirectTo !== null) {
-    //   this.setState({redirectTo: this.props.redirectTo });
-    // }
+
   }
 
   pullUpTime = (intervalSeconds) => {
@@ -315,7 +268,6 @@ export default class Main extends Component {
   render() {
     const { recording, series, graphHeight, width, intervalSeconds, maxHeight } = this.state;
     const { loggedIn } = this.props;
-    console.log('Main says loggedIn =', loggedIn);
     if (!loggedIn) {
       return <Redirect to={{ pathname: '/Intro' }} />
     } else {

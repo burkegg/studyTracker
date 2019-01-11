@@ -28,17 +28,13 @@ export default class App extends Component {
 
   getUser = (username = this.state.username, password = this.state.password) => {
     axios.get('/user/').then(response => {
-      //console.log('response data', response.data)
       if (response.data.user !== null && response.data.user !== undefined) {
-        console.log('Get User: There is a user saved in the server session: ')
-
         this.setState({
           loggedIn: true,
           username: response.data.user.username,
           userID: response.data.user._id,
         })
       } else {
-        console.log('Get user: no user');
         this.setState({
           loggedIn: false,
           username: null
@@ -49,16 +45,12 @@ export default class App extends Component {
 
   handleLogin = (event) => {
     event.preventDefault()
-    console.log('handleSubmit login')
-
     axios
       .post('/user/login', {
         username: this.state.username,
         password: this.state.password
       })
       .then(response => {
-        console.log('login response: ')
-        console.log(response)
         if (response.status === 200) {
           // update App.js state
           this.props.updateUser({
@@ -72,8 +64,7 @@ export default class App extends Component {
           })
         }
       }).catch(error => {
-        console.log('login error: ')
-        console.log(error);
+        console.log('login error: ', error)
       })
   }
   
@@ -89,8 +80,6 @@ export default class App extends Component {
   }
 
   render() {
-    console.log(this.state.loggedIn, this.state.username)
-
     const { loggedIn, redirectTo } = this.state;
 
     return (

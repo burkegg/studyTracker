@@ -9,10 +9,8 @@ const testSafety = require('../util/safety');
 taskRouter.get('/',
   require('connect-ensure-login').ensureLoggedIn(),
   (req, res) => {
-    console.log('--xxxxxxxxxxcxcxcxcxc- get get get');
     let userID = req.session.passport.user._id;
     Task.find({userID: userID}, (err, data) => {
-      console.log('THIS IS THE DATA', data);
     res.send(data);
   })
 });
@@ -21,9 +19,7 @@ taskRouter.get('/',
 taskRouter.post('/',
   require('connect-ensure-login').ensureLoggedIn(),
   (req, res) => {
-  console.log('POST POST POST POST POST POST POST')
   let userID = req.session.passport.user._id;
-  console.log('subject', req.body.subject);
   let allData = {
     userID: userID,
     taskDate: req.body.date,
@@ -39,17 +35,13 @@ taskRouter.post('/',
   for (let item in allData) {
     safetyCheckData.push(allData[item]);
   }
-  console.log(safetyCheckData);
-  console.log('checking safety', testSafety(safetyCheckData));
   if (!testSafety(safetyCheckData)) {
     res.send('Please don\'t hack me; I\'m new!');
     return;
   }
 
   newTask.save(allData, function(data) {
-    console.log('====================================');
     Task.find({userID: userID}, (err, data) => {
-      console.log('THIS IS THE DATA', data);
     res.send(data);
     })
   });

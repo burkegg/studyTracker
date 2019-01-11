@@ -48,7 +48,6 @@ export default class BottomButtons extends Component {
       let letter = string[j];
       passing = passing && regex.test(letter);
       if (!passing) {
-        console.log('THIS FAILED SAFETY', string[j]);
         return false;
       }
     }
@@ -65,7 +64,6 @@ export default class BottomButtons extends Component {
   }
 
   render(){
-
     const { recording, handleStartButton, handleFinishButton, pullUpTime, handleStopButton,
             handleCancelButton, handleCancelConfirm, handleResumeButton, } = this.props;
     const { width } = this.state;

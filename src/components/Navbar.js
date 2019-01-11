@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { Redirect } from 'react-router-dom'
 import { Route, Link } from 'react-router-dom'
-// import '../App.css';
 import axios from 'axios'
 
 class Navbar extends Component {
@@ -12,9 +11,7 @@ class Navbar extends Component {
 
   logout(event) {
     event.preventDefault()
-    console.log('logging out')
     axios.post('/user/logout').then(response => {
-      console.log(response.data)
       if (response.status === 200) {
         this.props.updateUser({
           loggedIn: false,
@@ -27,10 +24,7 @@ class Navbar extends Component {
   }
 
   render() {
-    const loggedIn = this.props.loggedIn;
-    // console.log('navbar render, props: ')
-    console.log('navbar says loggedIn =', loggedIn);
-    
+    const loggedIn = this.props.loggedIn;    
     return (
       <div>
         <header className="navbar App-header" id="nav-container">

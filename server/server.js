@@ -24,7 +24,7 @@ app.use('/', express.static(path.join(__dirname, '../build')));
 // })
 app.use(
   session({
-    secret: 'fraggle-rock', //pick a random string to make the hash that is generated secure
+    secret: 'replace_me_in_prod', //pick a random string to make the hash that is generated secure
     resave: false, //required
     saveUninitialized: false //required
   })
