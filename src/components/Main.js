@@ -317,7 +317,6 @@ export default class Main extends Component {
     const { loggedIn } = this.props;
     console.log('Main says loggedIn =', loggedIn);
     if (!loggedIn) {
-      console.log('>>>>> Redirecting?!?!?!')
       return <Redirect to={{ pathname: '/Intro' }} />
     } else {
       return(

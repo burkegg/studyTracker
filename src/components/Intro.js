@@ -9,10 +9,10 @@ export default function Intro(props) {
   } else {
     return(
       <div>
-        <h3> Study...Tracker?   ¯\_(ツ)_/¯ </h3>
+        <h3>Graph My Time</h3>
         <p>Keep track of time spent on each class.</p>
         <img src='./toS3/example.jpg' alt="an example graph" />
-        <p>"It's not procrastination if you use graphs!"</p>
+        <p>"It's not procrastination if you use graphs!"   ¯\_(ツ)_/¯</p>
       </div>
     )
   }
