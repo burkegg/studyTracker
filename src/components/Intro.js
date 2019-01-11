@@ -12,7 +12,7 @@ export default function Intro(props) {
         <h3>Graph My Time</h3>
         <p>Keep track of time spent on each class.</p>
         <img src='./toS3/example.jpg' alt="an example graph" />
-        <p>"It's not procrastination if you use graphs!"   ¯\_(ツ)_/¯</p>
+        <p>"It's not procrastination if you use graphs!"</p><p> ¯\_(ツ)_/¯</p>
       </div>
     )
   }

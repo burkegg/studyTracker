@@ -5,13 +5,12 @@ const session = require('express-session')
 const dbConnection = require('./database') 
 const passport = require('./passport');
 const path = require('path');
-const app = express()
-const PORT = 8080
-// Route requires
-const user = require('./routes/user')
+const app = express();
+const PORT = 8080;
+
+const user = require('./routes/user');
 const taskRouter = require('./routes/tasks');
 
-// MIDDLEWARE
 app.use(morgan('dev'))
 app.use(
   bodyParser.urlencoded({
@@ -30,6 +29,8 @@ app.use(
     saveUninitialized: false //required
   })
 )
+
+app.get('/favicon.ico', (req, res) => res.status(204));
 
 // Passport
 app.use(passport.initialize())

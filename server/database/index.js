@@ -4,12 +4,12 @@ mongoose.Promise = global.Promise
 
 //your local database url
 //27017 is the default mongoDB port
-const uri = 'mongodb://13.56.75.133:27017/graphmytime' 
+const uri = 'mongodb://ec2-54-183-224-183.us-west-1.compute.amazonaws.com:27017/graphmytime' 
 
 mongoose.connect(uri, 
     {
         user: 'root',
-        pass: 'insert_password_here'
+        pass: ''
     }).then(
     () => { 
         /** ready to use. The `mongoose.connect()` promise resolves to undefined. */ 
