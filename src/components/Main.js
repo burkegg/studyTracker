@@ -69,7 +69,7 @@ export default class Main extends Component {
   apiPost = (toPost) => {
     const { userID } = this.state;
     let url = '/api/tasks'
-    toPost.duration = Math.Ceil(toPost.duration / 60);
+    toPost.duration = Math.ceil(toPost.duration / 60);
     axios.post(url, {
       userID: userID,
       date: toPost.date,
