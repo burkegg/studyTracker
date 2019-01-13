@@ -25,4 +25,4 @@ mongoose.connect(uri,
   );
 
 
-module.exports = mongoose.connection
+module.exports = mongoose.connection;

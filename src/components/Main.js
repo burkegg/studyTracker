@@ -160,7 +160,6 @@ export default class Main extends Component {
       tempDate = tempDate.slice(0, 10);
       tempDate = tempDate.replace(/-/, '/');
       tempDate = tempDate.replace(/-/, '/');
-      tempDate = new Date(tempDate);
       data[i].taskDate = tempDate;
       if (!hash.hasOwnProperty(data[i].taskDate)) {
         let tempDay = Object.assign({}, templateDay);

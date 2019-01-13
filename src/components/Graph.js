@@ -47,8 +47,10 @@ export default class Graph extends Component {
     let dates = () => {
       return series[0].map((entry, idx) => {
         entry.data.date = entry.data.date.replace(/-/, '/');
+        entry.data.date = entry.data.date.replace(/-/, '/');
         let dateObj = new Date(entry.data.date);
         let day = dateObj.toDateString().substring(0, 3);
+        // let day = dateObj.getDay();
         let date = dateObj.getDate();
         let month = dateObj.toDateString().substring(4, 7)
         return (
