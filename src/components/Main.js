@@ -154,6 +154,14 @@ export default class Main extends Component {
       }
     }
     for (let i = 0; i < data.length; i++) {
+      // here only compare the first 10 digits...
+      // Cheap fix //
+      let tempDate = data[i].taskDate;
+      tempDate = tempDate.slice(0, 10);
+      tempDate = tempDate.replace(/-/, '/');
+      tempDate = tempDate.replace(/-/, '/');
+      tempDate = new Date(tempDate);
+      data[i].taskDate = tempDate;
       if (!hash.hasOwnProperty(data[i].taskDate)) {
         let tempDay = Object.assign({}, templateDay);
         let subj = data[i].subject;
@@ -172,7 +180,7 @@ export default class Main extends Component {
     let allDays = Object.keys(hash);
     for (let i = 0; i < allDays.length; i++) {
       let storage = hash[allDays[i]];
-      storage.date = new Date(allDays[i]);
+      storage.date = allDays[i].slice(0, 10);
       formatData.push(storage);
     }
     var stack = d3.stack()

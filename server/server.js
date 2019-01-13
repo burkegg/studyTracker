@@ -1,8 +1,11 @@
+
+
+// #!/usr/bin/env node
 const express = require('express')
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
 const session = require('express-session')
-const dbConnection = require('./database') 
+const dbConnection = require('./database')
 const passport = require('./passport');
 const path = require('path');
 const app = express();
@@ -21,12 +24,11 @@ app.use(bodyParser.json())
 app.use('/', express.static(path.join(__dirname, '../build')));
 app.use('/login', express.static(path.join(__dirname, '../build')));
 app.use('/signup', express.static(path.join(__dirname, '../build')));
-// app.get('/*', function(req, res) {
-//   res.sendFile(path.join(__dirname, '../build', 'index.html'));
-// })
+app.use('/intro', express.static(path.join(__dirname, '../build')));
+
 app.use(
   session({
-    secret: 'replace_me_in_prod', //pick a random string to make the hash that is generated secure
+    secret: 'pass', //pick a random string to make the hash that is generated secure
     resave: false, //required
     saveUninitialized: false //required
   })
@@ -37,11 +39,6 @@ app.get('/favicon.ico', (req, res) => res.status(204));
 // Passport
 app.use(passport.initialize())
 app.use(passport.session()) // calls the deserializeUser
-
-// app.use('/', (req, res, next) => {
-//   console.log('session data', req.session);
-//   next();
-// })
 
 // Routes
 app.use('/user', user)

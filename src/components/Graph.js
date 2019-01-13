@@ -46,11 +46,11 @@ export default class Graph extends Component {
 
     let dates = () => {
       return series[0].map((entry, idx) => {
+        entry.data.date = entry.data.date.replace(/-/, '/');
         let dateObj = new Date(entry.data.date);
         let day = dateObj.toDateString().substring(0, 3);
         let date = dateObj.getDate();
         let month = dateObj.toDateString().substring(4, 7)
-
         return (
           <g key={idx+'dates'}>
           <text x={xFactor * idx + 3} y={graphHeight - 35} className={style}>{day}</text>

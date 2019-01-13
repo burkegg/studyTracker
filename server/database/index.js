@@ -9,7 +9,7 @@ const uri = 'mongodb://ec2-54-183-224-183.us-west-1.compute.amazonaws.com:27017/
 mongoose.connect(uri, 
     {
         user: 'root',
-        pass: 'PASSWORD'
+        pass: 'pass'
     }).then(
     () => { 
         /** ready to use. The `mongoose.connect()` promise resolves to undefined. */ 

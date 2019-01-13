@@ -68,7 +68,6 @@ export default class App extends Component {
       })
   }
   
-
   componentDidMount() {
     this.getUser();
     // this.getGraphHeight();
