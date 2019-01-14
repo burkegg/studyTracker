@@ -43,30 +43,35 @@ export default class App extends Component {
     })
   }
 
-  handleLogin = (event) => {
-    event.preventDefault()
-    axios
-      .post('/user/login', {
-        username: this.state.username,
-        password: this.state.password
-      })
-      .then(response => {
-        if (response.status === 200) {
-          // update App.js state
-          this.props.updateUser({
-            loggedIn: true,
-            username: response.data.username,
-            userID: response.data.userID,
-          })
-          // update the state to redirect to home
-          this.setState({
-            redirectTo: '/'
-          })
-        }
-      }).catch(error => {
-        console.log('login error: ', error)
-      })
-  }
+  // handleLogin = (event) => {
+  //   event.preventDefault()
+  //   axios
+  //     .post('/user/login', {
+  //       username: this.state.username,
+  //       password: this.state.password
+  //     })
+  //     .then(response => {
+  //       if (response.status === 200 && response.data.username) {
+  //         // update App.js state
+  //         console.log('response.data', response.data)
+  //         this.props.updateUser({
+  //           loggedIn: true,
+  //           username: response.data.username,
+  //           userID: response.data.userID,
+  //         })
+  //         // update the state to redirect to home
+  //         this.setState({
+  //           redirectTo: '/'
+  //         })
+  //       } else {
+  //         this.setState({
+  //           redirectTo: '/login'
+  //         })
+  //       }
+  //     }).catch(error => {
+  //       console.log('login error: ', error)
+  //     })
+  // }
   
   componentDidMount() {
     this.getUser();
@@ -80,7 +85,6 @@ export default class App extends Component {
 
   render() {
     const { loggedIn, redirectTo } = this.state;
-
     return (
       <div className="App">
         <Navbar updateUser={this.updateUser} loggedIn={this.state.loggedIn} />
@@ -99,7 +103,8 @@ export default class App extends Component {
             render={() =>
               <LoginForm
                 updateUser={this.updateUser}
-                handleLogin={this.handleLogin}
+                handleLogin={this.getUser}
+                redirectTo={redirectTo}
               />}
           />
           <Route

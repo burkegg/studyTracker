@@ -275,7 +275,9 @@ export default class Main extends Component {
   render() {
     const { recording, series, graphHeight, width, intervalSeconds, maxHeight } = this.state;
     const { loggedIn } = this.props;
+    console.log('logged in main?', loggedIn)
     if (!loggedIn) {
+      console.log('attempting redirect in Main');
       return <Redirect to={{ pathname: '/Intro' }} />
     } else {
       return(
