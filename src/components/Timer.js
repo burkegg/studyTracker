@@ -4,8 +4,8 @@ export default class Timer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      displayTime: 0,
-      duration: 0,
+      displayTime: '',
+      duration: '',
       intervalSeconds: 0,
       loading: true,
     }
@@ -18,13 +18,34 @@ export default class Timer extends Component {
     this.timerID = setInterval(
       ()=>{
         let interval = Math.floor((Date.now() - startTime) / 1000) + intervalSeconds;
+        interval = this.formatTime(interval);
         this.setState({ duration: interval });
     }, 1000)
   }
 
   componentWillUnmount() {
     clearInterval(this.timerID);
-    this.setState({ duration: 0 });
+    this.setState({ duration: '' });
+  }
+
+  formatTime(seconds) {
+    let min = Math.floor(seconds / 60);
+    let remainder = seconds / 60 - min;
+    let sec = 0;
+    let secString = '';
+    let minString = '';
+
+    if (remainder > 0) {
+      sec = Math.ceil(remainder * 60);
+    }
+    if (min > 0) {
+      minString = `${min}m `;
+    }
+    if (sec > 0) {
+      secString = `${sec}s`
+    }
+    let outString = minString + secString;
+    return outString;
   }
 
   render() {
@@ -37,8 +58,8 @@ export default class Timer extends Component {
             <g onClick={()=>{
               handleStopButton(duration);
             }}>
-            <circle cx={width / 2} cy='52' r='45'fill='red' id="startButton" />
-            <text x={width / 2} y='55' textAnchor='middle' style={buttonTextStyle}>{duration}</text>
+            <circle cx={width / 2} cy='52' r='45'fill='red'  />
+            <text x={width / 2} y='55' textAnchor='middle' id="stopButton">{duration}</text>
             </g>
             </svg>
         </div>

@@ -12,6 +12,7 @@
     "d3": "^5.7.0",
     "express-session": "^1.15.6",
     "lodash": "^4.17.11",
+    "moment": "^2.23.0",
     "mongoose": "^5.4.0",
     "morgan": "^1.9.1",
     "mysql": "^2.16.0",

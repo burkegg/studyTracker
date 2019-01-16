@@ -24,22 +24,22 @@ export default class Main extends Component {
     };
   };
 
-  getUser = () => {
-    axios.get('/user/').then(response => {
-      if (response.data.user) {
-        this.setState({
-          loggedIn: true,
-          username: response.data.user.username,
-          userID: response.data.user._id,
-        })
-      } else {
-        this.setState({
-          loggedIn: false,
-          username: null
-        })
-      }
-    })
-  }
+  // getUser = () => {
+  //   axios.get('/user/').then(response => {
+  //     if (response.data.user) {
+  //       this.setState({
+  //         loggedIn: true,
+  //         username: response.data.user.username,
+  //         userID: response.data.user._id,
+  //       })
+  //     } else {
+  //       this.setState({
+  //         loggedIn: false,
+  //         username: null
+  //       })
+  //     }
+  //   })
+  // }
 
   getTasks = () => {
     const { userID } = this.state;
@@ -52,7 +52,11 @@ export default class Main extends Component {
     })
     .then(result => {
       if (result.data.length === 0) {return result.data}
-      return this.getTenDays(result.data);
+
+      let tenDaysData = this.getTenDays(result.data);
+
+      return tenDaysData;
+      // return this.getTenDays(result.data);
     })
     .then((tenDaysData) => {
       if (tenDaysData.length === 0) {return []}
@@ -67,6 +71,7 @@ export default class Main extends Component {
   }
 
   apiPost = (toPost) => {
+    console.log('checking if toPost has date', toPost.date)
     const { userID } = this.state;
     let url = '/api/tasks'
     toPost.duration = Math.ceil(toPost.duration / 60);
@@ -103,35 +108,51 @@ export default class Main extends Component {
     })
   }
 
-  getTenDays(data) {
-    if (!data) return;
+  formatSortDates(data) {
+    for (let i = 0; i < data.length; i++) {
+      data[i].taskDate = data[i].taskDate.slice(0, 10);
+      data[i].taskDate = data[i].taskDate.replace(/-/, '/');
+      data[i].taskDate = data[i].taskDate.replace(/-/, '/');
+      //data[i].taskDate = new Date(data[i].taskDate).toISOString();
+    }
     data = data.sort((a, b) => {
-      let aDate = new Date(a.date);
-      let bDate = new Date(b.date);
+      let aDate = a.taskDate;
+      let bDate = b.taskDate;
       if (aDate < bDate) {
         return -1;
       } else {
         return 1;
       }
     })
-    let idx = data.length - 1;
-    let dates = {};
-    let cutting = false;
-    while (idx >= 0) {
-      if (Object.keys(dates).length === 10 && !dates.hasOwnProperty(dates[data[idx].taskDate])) {
-        cutting = true;
-        break;
-      }
-      dates[data[idx].taskDate] = dates[data[idx].taskDate] || 1;
-      idx--; 
-    }
-    if (cutting) {
-      data = data.slice(idx + 1);
-    }
     return data;
   }
 
+  getTenDays(data) {
+    if (!data) return;
+    
+    data = this.formatSortDates(data);
 
+    let idx = data.length - 1;
+    let dates = {};
+
+    // Get an object with 10 date keys
+    while (idx >= 0) {
+      if (Object.keys(dates).length === 10 && !dates.hasOwnProperty(dates[data[idx].taskDate])) {
+        break;
+      }
+      dates[data[idx].taskDate] = 'date added to hash';
+      idx--; 
+    }
+
+    // Go through all data.  if it's in the hash, write it to our outgoing array.
+    let outgoingData = [];
+    for (let i = 0; i < data.length; i++) {
+      if (data[i].taskDate in dates) {
+        outgoingData.push(data[i]);
+      }
+    }
+    return outgoingData;
+  }
 
   getMaxHeight(seriesData) {
     let topRow = seriesData[seriesData.length - 1];
@@ -275,7 +296,6 @@ export default class Main extends Component {
   render() {
     const { recording, series, graphHeight, width, intervalSeconds, maxHeight } = this.state;
     const { loggedIn } = this.props;
-    console.log('logged in main?', loggedIn)
     if (!loggedIn) {
       console.log('attempting redirect in Main');
       return <Redirect to={{ pathname: '/Intro' }} />

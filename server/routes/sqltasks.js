@@ -8,7 +8,6 @@ const bcrypt = require('bcryptjs');
 taskRouter.get('/',
   require('connect-ensure-login').ensureLoggedIn(),
   (req, res) => {
-    console.log('--------------------- get get get');
   let userID = req.session.passport.user._id;
   let encryptedUserID = 
   getTasksByUser(userID, function(data){
@@ -20,7 +19,6 @@ taskRouter.get('/',
 taskRouter.post('/',
   require('connect-ensure-login').ensureLoggedIn(),
   (req, res) => {
-  console.log('POST POST POST POST POST POST POST')
   const userID = req.body.userID;
   const date = req.body.date;
   const duration = req.body.duration;
@@ -36,7 +34,6 @@ taskRouter.post('/',
   }
 
   postTaskByUser([userID, date, duration, subject, assign, notes], () => {
-    // console.log('====================================', userID);
     getTasksByUser(userID, function(data){
       res.send(data);
     })
