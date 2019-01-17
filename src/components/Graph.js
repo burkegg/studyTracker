@@ -20,14 +20,9 @@ export default class Graph extends Component {
     // also sets maxHeight in state, while looking at data.
 
     let { width, graphHeight, series, maxHeight } = this.props;
-    if (maxHeight < 30) {
-      maxHeight = 35;
-    }
-    // maxHeight is the highest set of bars
-
     if (series === null) {
       // ==========  PUT IN INSTRUCTIONS FOR NO GRAPH DATA ===============
-      return(<div>When you're ready to start working, just hit start!  Remember to pause when you get distracted.</div>)
+      return(<div>When you're ready to start working, just hit start!  BTW if you've studied less than 1/2 hr, things will look weird(er).  Once you hit start, it's game on.</div>)
     }
 
     if (width < 100) {
@@ -72,30 +67,17 @@ export default class Graph extends Component {
     let lines = function() {
       let lineLocs = [];
       let count = 0;
-
-      if (maxHeight <= 120) {
-        while (count <= maxHeight - 5) {
-          count += 30;
-          lineLocs.push(count);
-        }
-      } else {
-        while (count <= maxHeight - 5) {
-          count += 60;
-          lineLocs.push(count);
-        }
+      while (count <= maxHeight) {
+        count += 30;
+        lineLocs.push(count);
       }
       return lineLocs.map((loc, idx) => {
         let tempKey = loc;
-        if (maxHeight >= 120 + 5) {
-          tempKey = `${Math.round(tempKey / 60)}hr`;
-        } else {
-          tempKey = `${tempKey}m`
-        }
         loc = zero - loc * yFactor;
         return(
           <g key={idx+'line'}>
-            <line x1='0' y1={loc} x2={width - 25} y2={loc} stroke='grey' strokeWidth='0.5'/>
-            <text x={width - 22} y = {loc + 5}>{`${tempKey}`}</text>
+            <line x1='0' y1={loc} x2={width} y2={loc} stroke='grey' strokeWidth='0.5'/>
+            <text x={width - 30} y = {loc - 5}>{`${tempKey} m`}</text>
           </g>
         )
       })
@@ -115,7 +97,7 @@ export default class Graph extends Component {
           let longKey = course.substring(0, 15);
           let shortKey = course.substring(0, 3);
           let midpoint = zero - (datapoint[0] + datapoint[1]) / 2 * yFactor;
-          if (size >= 25) {
+          if (size >= 22) {
             return ( 
               <g>
                 <rect
@@ -123,13 +105,13 @@ export default class Graph extends Component {
                   height={yFactor * (datapoint[1] - datapoint[0])}
                   width={barWidth} fill={this.colorPicker(subj)}
                   strokeWidth='.4' stroke='black' fillOpacity='0.3' rx='1' ry='1'className='graphRect' />
-                <text x={xFactor * idx + 12} y={midpoint + 3} 
+                <text x={xFactor * idx + 12} y={midpoint} 
                 writingMode='tb-rl' textAnchor='middle'>
                 {longKey}
                 </text>
               </g>
             )
-          } else if (size >= 22) {
+          } else if (size >= 17) {
             return ( 
               <g>
                 <rect x={xFactor * idx} y={zero - (yFactor * datapoint[1])}

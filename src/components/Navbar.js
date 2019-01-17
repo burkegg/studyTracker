@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { Redirect } from 'react-router-dom'
 import { Route, Link } from 'react-router-dom'
 import axios from 'axios'
-import BackButton from './BackButton';
 
 class Navbar extends Component {
   constructor() {
@@ -27,32 +26,36 @@ class Navbar extends Component {
   render() {
     const loggedIn = this.props.loggedIn;    
     return (
+      <div>
         <header className="navbar App-header" id="nav-container">
+          <div>
             {loggedIn ? (
-              <div className="loggedIn">
-                <div id="backButton" className="scrollButton">
-                  <BackButton />
-                </div>
-                <div>
-                  <Link to="#" className="btn" onClick={this.logout}>
-                    <span>logout</span>
-                  </Link>
-                </div>
-                <div id = "forwardButton" className="scrollButton">
-                  <BackButton />
-                </div>
-              </div>
+              <section className="loggedIn">
+                <Link to="#" className="btn btn-link text-secondary" onClick={this.logout}>
+                <span className="text-secondary">logout</span></Link>
+              </section>
             ) : (
                 <section className="loggedOut">
-                  <Link to="/login" className="btn">
-                    <span>login</span> 
+                  {/*<Link to="/" className="btn btn-link text-secondary">
+                    <span className="text-secondary">home</span>
+                    </Link>*/}
+                  <Link to="/login" className="btn btn-link text-secondary">
+                    <span className="text-secondary">login</span> 
                   </Link>
-                  <Link to="/signup" className="btn">
-                    <span>sign up</span>
+                  <Link to="/signup" className="btn btn-link">
+                    <span className="text-secondary">sign up</span>
                   </Link>
                 </section>
               )}
+          </div>
+          <div className="col-4 col-mr-auto">
+          {/*  
+          <div id="top-filler"></div>
+            <h1 className="App-title">Study...Tracker?</h1>
+          */}
+          </div>
         </header>
+      </div>
     );
   }
 }
