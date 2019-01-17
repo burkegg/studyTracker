@@ -167,12 +167,21 @@ export default class Main extends Component {
     let hash = {};
     let templateDay = {};
     let allKeys = [];
+
+
     for (let i = 0; i < data.length; i++) {
       let subject = data[i].subject;
+
+      // Right now we are seeing if a subject is in template day
+      // and if not, setting 
+      // templateDay =>. {subject: 0}
+
       if (!templateDay.hasOwnProperty(data[subject])) {
         templateDay[subject] = 0;
       }
     }
+
+
     for (let i = 0; i < data.length; i++) {
       // here only compare the first 10 digits...
       // Cheap fix //
@@ -188,7 +197,11 @@ export default class Main extends Component {
         hash[data[i].taskDate] = tempDay;
       } else {
         let tempDay = Object.assign({}, hash[data[i].taskDate]);
-        tempDay[data[i].subject] = data[i].duration;
+        if (tempDay[data[i].subject] === 0) {
+          tempDay[data[i].subject] = data[i].duration;  
+        } else {
+          tempDay[data[i].subject] = tempDay[data[i].subject] + data[i].duration;
+        }
         hash[data[i].taskDate] = tempDay;
       }
     }

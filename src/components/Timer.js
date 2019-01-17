@@ -51,7 +51,7 @@ export default class Timer extends Component {
 
   render() {
     const { width, buttonTextStyle, handleStopButton } = this.props
-    let { duration, loading } = this.state;
+    let { duration, loading, intervalFormatted } = this.state;
     if (!loading) {
       return(
         <div>
@@ -60,7 +60,7 @@ export default class Timer extends Component {
               handleStopButton(duration);
             }}>
             <circle cx={width / 2} cy='52' r='45'fill='red'  />
-            <text x={width / 2} y='55' textAnchor='middle' id="stopButton">{duration}</text>
+            <text x={width / 2} y='55' textAnchor='middle' id="stopButton">{intervalFormatted}</text>
             </g>
             </svg>
         </div>
