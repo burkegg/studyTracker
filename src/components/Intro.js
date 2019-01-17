@@ -4,8 +4,7 @@ import { Route, Link, Redirect } from 'react-router-dom';
 
 export default function Intro(props) {
   if (props.loggedIn) {
-      console.log('>>>>> Redirecting?!?!?!')
-      return <Redirect to={{ pathname: '/' }} />
+    return <Redirect to={{ pathname: '/' }} />
   } else {
     return(
       <div>
