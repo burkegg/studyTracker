@@ -30,17 +30,17 @@ class Navbar extends Component {
         <header className="navbar App-header" id="nav-container">
             {loggedIn ? (
               <div className="loggedIn">
-                <div id="backButton" className="scrollButton">
+                {/*<div id="backButton" className="scrollButton">
                   <BackButton />
-                </div>
+                </div>*/}
                 <div>
                   <Link to="#" className="btn" onClick={this.logout}>
                     <span>logout</span>
                   </Link>
                 </div>
-                <div id = "forwardButton" className="scrollButton">
+                {/*<div id = "forwardButton" className="scrollButton">
                   <BackButton />
-                </div>
+                </div>*/}
               </div>
             ) : (
                 <section className="loggedOut">
