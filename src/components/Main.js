@@ -21,6 +21,8 @@ export default class Main extends Component {
       loggedIn: false,
       failed: false,
       redirectTo: null,
+      firstTracked: null,
+      lastTracked: null,
     };
   };
 

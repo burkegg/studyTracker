@@ -11,8 +11,7 @@ body {
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",monospace;
 }
 
 img {
@@ -117,19 +116,6 @@ button {
   margin-top: 30px;
 }
 
-
-/*.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
-}*/
-
-/*.App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
-  color: white;
-}*/
-
 .App-title {
   font-size: 1.5em;
 }
@@ -138,19 +124,8 @@ button {
   font-size: large;
 }
 
-
-
 #top-filler {
   margin-bottom: auto;
-}
-
-/*#nav-container {
-  align-items: flex-end;
-}*/
-
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
 }
 
 .App {
@@ -159,8 +134,6 @@ button {
   padding: 0px;
   margin-right: 0px;
 }
-
-
 
 .loggedIn {
   width: 100%;
@@ -181,11 +154,6 @@ button {
   margin: 30px;
 }
 
-/*.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
-}*/
-
 .formInput {
    font-size: 1.2em;
 }
@@ -197,11 +165,6 @@ button {
   color: white;
   align-content: center;
 }
-
-/*.App-title {
-  font-size: 1.5em;
-}*/
-
 
 .navbar {
   width: 100%;
@@ -215,10 +178,3 @@ button {
 #top-filler {
   margin-bottom: auto;
 }
-
-
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
