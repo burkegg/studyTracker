@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import ScrollButtons from './components/ScrollButtons';
 import { Route, Link, Switch } from 'react-router-dom';
 import Graph from './components/Graph';
 import BottomButtons from './components/BottomButtons';

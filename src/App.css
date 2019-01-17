@@ -5,8 +5,6 @@
   margin-right: 0px;
 }
 
-
-
 .loggedIn {
   font-size: 1.5em;
 }
@@ -22,22 +20,18 @@
   margin: 30px;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
-}
 
 .formInput {
    font-size: 1.2em;
 }
 
-.App-header {
+/*.App-header {
   background-color: rgba(150, 100, 200, .5);
   height: 25px;
   padding: 0px;
   color: white;
   align-content: center;
-}
+}*/
 
 .App-title {
   font-size: 1.5em;

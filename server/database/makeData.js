@@ -17,16 +17,6 @@ const uri = 'mongodb://ec2-54-183-224-183.us-west-1.compute.amazonaws.com:27017/
 let tasks = ['patrol bridge', 'throw rocks', 'spell', 'eat "food"'];
 let username = 'Mr. T. Roll'
 let _id = '5c3d3a304394f54961068c4a';
-// let today = new Date('2019-01-11');
-// console.log(today);
-
-
-
-// for ten days, make 4 tasks each day
-// patrol bridge: 2 hours
-// throw rocks: 1 hour
-// spell: 30 min
-// eat: 2 hours
 
 
 let startDate = '2019-01-01';

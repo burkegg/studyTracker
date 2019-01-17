@@ -69,7 +69,6 @@ export default class Graph extends Component {
       })
     }
 
-
     let lines = function() {
       let lineLocs = [];
       let count = 0;

@@ -118,21 +118,17 @@ button {
 }
 
 
-.App {
-  text-align: center;
-}
-
-.App-logo {
+/*.App-logo {
   animation: App-logo-spin infinite 20s linear;
   height: 80px;
-}
+}*/
 
-.App-header {
+/*.App-header {
   background-color: #222;
   height: 150px;
   padding: 20px;
   color: white;
-}
+}*/
 
 .App-title {
   font-size: 1.5em;
@@ -142,17 +138,15 @@ button {
   font-size: large;
 }
 
-.navbar {
-  margin-top: auto;
-  
-}
+
+
 #top-filler {
   margin-bottom: auto;
 }
 
-#nav-container {
+/*#nav-container {
   align-items: flex-end;
-}
+}*/
 
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
@@ -169,7 +163,11 @@ button {
 
 
 .loggedIn {
+  width: 100%;
   font-size: 1.5em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .loggedOut {
@@ -183,10 +181,10 @@ button {
   margin: 30px;
 }
 
-.App-logo {
+/*.App-logo {
   animation: App-logo-spin infinite 20s linear;
   height: 80px;
-}
+}*/
 
 .formInput {
    font-size: 1.2em;
@@ -194,33 +192,30 @@ button {
 
 .App-header {
   background-color: rgba(150, 100, 200, .5);
-  height: 25px;
+  {/*height: 25px; */}
   padding: 0px;
   color: white;
   align-content: center;
 }
 
-.App-title {
+/*.App-title {
   font-size: 1.5em;
-}
+}*/
 
-.App-intro {
-  font-size: large;
-}
 
 .navbar {
+  width: 100%;
   margin-top: 0px;
   margin-right: 0px;
-  padding: 15px;
+  /*padding: 15px;*/
+  height: 10%;
+  max-height: 60px;
 }
 
 #top-filler {
   margin-bottom: auto;
 }
 
-#nav-container {
-  align-items: flex-end;
-}
 
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }

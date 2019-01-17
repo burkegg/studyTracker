@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import ScrollButtons from './ScrollButtons';
 import { Route, Link, Redirect } from 'react-router-dom';
 import Graph from './Graph';
 import BottomButtons from './BottomButtons';
 import axios from 'axios';
 import * as d3 from 'd3';
+import BackButton from './BackButton';
 
 export default class Main extends Component {
   constructor(props) {
@@ -42,6 +42,7 @@ export default class Main extends Component {
   // }
 
   getTasks = () => {
+    console.log('getTasks was called');
     const { userID } = this.state;
     let url = '/api/tasks'
     let maxHeight = 0;
@@ -113,7 +114,7 @@ export default class Main extends Component {
       data[i].taskDate = data[i].taskDate.slice(0, 10);
       data[i].taskDate = data[i].taskDate.replace(/-/, '/');
       data[i].taskDate = data[i].taskDate.replace(/-/, '/');
-      //data[i].taskDate = new Date(data[i].taskDate).toISOString();
+      data[i].taskDate = new Date(data[i].taskDate).toISOString();
     }
     data = data.sort((a, b) => {
       let aDate = a.taskDate;
