@@ -7,34 +7,17 @@ import BackButton from './BackButton';
 class Navbar extends Component {
   constructor() {
     super()
-    this.logout = this.logout.bind(this)
-  }
-
-  logout(event) {
-    event.preventDefault()
-    axios.post('/user/logout').then(response => {
-      if (response.status === 200) {
-        this.props.updateUser({
-          loggedIn: false,
-          username: null
-        })
-      }
-    }).catch(error => {
-        console.log('Logout error')
-    })
   }
 
   render() {
-    const loggedIn = this.props.loggedIn;    
+    const {loggedIn, logout, leftArrowVisible, rightArrowVisible } = this.props; 
+
     return (
         <header className="navbar App-header" id="nav-container">
             {loggedIn ? (
               <div className="loggedIn">
-                {/*<div id="backButton" className="scrollButton">
-                  <BackButton />
-                </div>*/}
                 <div>
-                  <Link to="#" className="btn" onClick={this.logout}>
+                  <Link to="#" className="btn" onClick={logout}>
                     <span>logout</span>
                   </Link>
                 </div>
