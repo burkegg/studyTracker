@@ -7,22 +7,21 @@ mongoose.Promise = global.Promise
 const uri = 'mongodb://ec2-54-183-224-183.us-west-1.compute.amazonaws.com:27017/graphmytime' 
 
 mongoose.connect(uri, 
-    {
-        user: 'root',
-        pass: 'pass'
-    }).then(
-    () => { 
-        /** ready to use. The `mongoose.connect()` promise resolves to undefined. */ 
-        console.log('Connected to Mongo');
-        
-    },
-    err => {
-         /** handle initial connection error */ 
-         console.log('error connecting to Mongo: ')
-         console.log(err);
-         
-        }
-  );
+  {
+    user: 'root',
+    pass: 'pass'
+  }).then(
+  () => { 
+    /** ready to use. The `mongoose.connect()` promise resolves to undefined. */ 
+    console.log('Connected to Mongo');
+      
+  },
+  err => {
+    /** handle initial connection error */ 
+    console.log('error connecting to Mongo: Did you remember to put in the password?')
+    console.log(err);  
+  }
+);
 
 
 module.exports = mongoose.connection;

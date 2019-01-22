@@ -7,36 +7,38 @@ import BackButton from './BackButton';
 class Navbar extends Component {
   constructor() {
     super()
-    this.logout = this.logout.bind(this)
+  }
+  
+
+  showLeft = () => {
+    if (this.props.leftArrowVisible) {
+      return(<BackButton side={'left'} handleScrollButtons={this.props.handleScrollButtons}/>)
+    } else {
+      return(<span></span>);
+    }
   }
 
-  logout(event) {
-    event.preventDefault()
-    axios.post('/user/logout').then(response => {
-      if (response.status === 200) {
-        this.props.updateUser({
-          loggedIn: false,
-          username: null
-        })
-      }
-    }).catch(error => {
-        console.log('Logout error')
-    })
+  showRight = () => {
+    if (this.props.rightArrowVisible) {
+      return(<BackButton side={'right'} handleScrollButtons={this.props.handleScrollButtons}/>)
+    } else {
+      return(<span></span>);
+    }
   }
 
   render() {
-    const loggedIn = this.props.loggedIn;    
+    const {loggedIn, logout, leftArrowVisible, rightArrowVisible } = this.props; 
+
     return (
         <header className="navbar App-header" id="nav-container">
             {loggedIn ? (
               <div className="loggedIn">
-                {/*<div id="backButton" className="scrollButton">
-                  <BackButton />
-                </div>*/}
                 <div>
-                  <Link to="#" className="btn" onClick={this.logout}>
+                {this.showLeft()}
+                  <Link to="#" className="btn" onClick={logout}>
                     <span>logout</span>
                   </Link>
+                  {this.showRight()}
                 </div>
                 {/*<div id = "forwardButton" className="scrollButton">
                   <BackButton />
