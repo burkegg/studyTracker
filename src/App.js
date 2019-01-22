@@ -20,7 +20,6 @@ export default class App extends Component {
       userID: null,
       id: null,
       redirectTo: '/Intro',
-      data: [],
       series: null,
       intervalSeconds: 0,
       series: null,
@@ -75,16 +74,48 @@ export default class App extends Component {
   }
 
   getTenDays(data, lastDay) {
-    if (!data) return;
-    let idx = data.length - 1;
+    /* 
+    takes a sorted array of data and the last of 10 days to trace back from
+    returns the subset of the original array that fits into 10 days
+    TO DO:  fix the back scroll so that it doesn't end up with only 1 thing on the left
+    */
+    if (!data) return [];
+    lastDay = lastDay || new Date();
+    lastDay = new moment(lastDay);
+    let endSubset;
+    // Go through possibilities of where lastDay falls relative to data.
+
+    // if LastDay is after the last entry, set lastDay to that taskDate.
+    let lastDataDate = new moment(data[data.length - 1].taskDate);
+    if (lastDay.isAfter(lastDataDate)) {
+      lastDay = lastDataDate;
+    }
+    // if lastDay is before the first entry, set lastDay to ten days after the first entry.
+    let firstDataDate = new moment(data[0].taskDate);
+    if (lastDay.isBefore(firstDataDate)) {
+      lastDay = firstDataDate.add(10, 'days');
+    }
+    // if lastDay falls too close to the left end, shift it right a little
+    // if (lastDay.subtract(10, 'days').isBefore(firstDataDate)) {
+    //   lastDay = firstData.add(10, 'days');
+    // }
+
+    // search backwards through the array until we get to one where the date is lastDay
+    for (let idx = data.length - 1; idx >= 0; idx--) {
+      if (moment(data[idx].taskDate).isSame(lastDay, 'day')) {
+        endSubset = idx;
+        console.log(data);
+        console.log(idx);
+        break;
+        }
+    }
+
     let dates = {};
-    // Get an object with 10 date keys
-    while (idx >= 0) {
+    for (let idx = endSubset; idx >= 0; idx--) {
       if (Object.keys(dates).length === 10 && !dates.hasOwnProperty(dates[data[idx].taskDate])) {
         break;
       }
       dates[data[idx].taskDate] = 'date added to hash';
-      idx--; 
     }
 
     // Go through all data.  if it's in the hash, write it to our outgoing array.
@@ -94,12 +125,14 @@ export default class App extends Component {
         outgoingData.push(data[i]);
       }
     }
-    if (lastDay === undefined) {
+    //if (lastDay === undefined) {
       let firstVisible = outgoingData[0].taskDate;
       let lastVisible = outgoingData[outgoingData.length - 1].taskDate;
-      this.setState({firstVisible: firstVisible, lastVisible: lastVisible});
-    }
-    return outgoingData;
+      this.setState({firstVisible: firstVisible, lastVisible: lastVisible}, ()=>{
+        console.log('setting first and last vis',firstVisible, lastVisible);
+      });
+    //}
+    return outgoingData
   }
 
   replaceDashes(dashDate) {
@@ -110,7 +143,9 @@ export default class App extends Component {
 
   arrowsToShow() {
     let { firstVisible, lastVisible, rawData } = this.state;
+    console.log('arrowsToShow', 'firstVisible', firstVisible, 'lastVisible', lastVisible);
     // determine left arrow
+    if (!rawData || !firstVisible || !lastVisible) return;
     let rawStart = rawData[0].taskDate;
     let rawEnd = rawData[rawData.length - 1].taskDate;
     rawStart = rawStart.slice(0, 10);
@@ -125,16 +160,16 @@ export default class App extends Component {
     rawEnd = new Date(rawEnd).toISOString();
     firstVisible = new Date(firstVisible).toISOString();
     lastVisible = new Date(lastVisible).toISOString();
-
+    console.log('testing left arrow', moment(rawStart).isBefore(firstVisible));
     if (moment(rawStart).isBefore(firstVisible)) {
-      this.setState({ leftArrowVisible: true });
+      this.setState({ leftArrowVisible: true }, ()=>{console.log('state leftArrowVisible:', this.state.leftArrowVisible)});
     } else {
-      this.setState({ leftArrowVisible: false });
+      this.setState({ leftArrowVisible: false }, ()=>{console.log('state leftArrowVisible:', this.state.leftArrowVisible)});
     }
     if (moment(rawEnd).isAfter(lastVisible)) {
-      this.setState({ rightArrowVisible: true });
+      this.setState({ rightArrowVisible: true }, ()=>{console.log('state rightArrowVisible:', this.state.rightArrowVisible)});
     } else {
-      this.setState({ rightArrowVisible: false });
+      this.setState({ rightArrowVisible: false }, ()=>{console.log('state rightArrowVisible:', this.state.rightArrowVisible)});
     }
   }
 
@@ -148,7 +183,7 @@ export default class App extends Component {
   }
 
   formatSortDates(data) {
-    if(!data) return;
+    if(!data) return [];
     for (let i = 0; i < data.length; i++) {
       data[i].taskDate = data[i].taskDate.slice(0, 10);
       data[i].taskDate = this.replaceDashes(data[i].taskDate)
@@ -191,6 +226,7 @@ export default class App extends Component {
   }
 
   getUser = (username = this.state.username, password = this.state.password) => {
+    console.log('getusercalled')
     axios.get('/user/')
     .then(response => {
       if (response.data.user !== null && response.data.user !== undefined) {
@@ -198,7 +234,7 @@ export default class App extends Component {
           loggedIn: true,
           username: response.data.user.username,
           userID: response.data.user._id,
-        })
+        }, ()=>{console.log('state was updated with  user data', this.state.loggedIn, this.state.username)})
       } else {
         this.setState({
           loggedIn: false,
@@ -206,9 +242,13 @@ export default class App extends Component {
         })
       }
     })
+    .catch(err => {
+      console.log(err);
+    })
   }
 
   dataToRectLocs(data) {
+    if (!data) return [];
     let formatData = [];
     let hash = {};
     let templateDay = {};
@@ -269,8 +309,40 @@ export default class App extends Component {
     // this.getTasks();
   }
 
-  handleScrollButtons = (e) => {
-    return;
+  handleScrollButtons = (side) => {
+    console.log(side);
+    if (side === 'left') {
+      // get a date 10 days previous to current right side of visible
+      let { lastVisible, rawData } = this.state;
+      lastVisible = new moment(lastVisible);
+      lastVisible = lastVisible.subtract(10, 'days');
+
+      console.log('lastvisible', lastVisible.toISOString());
+      lastVisible = lastVisible.toISOString();
+      let tenDaysData = this.getTenDays(rawData, lastVisible);
+      let series = this.dataToRectLocs(tenDaysData);
+      let maxHeight = this.getMaxHeight(series);
+      this.setState({ series: series, maxHeight: maxHeight, recording: 'prestart', lastVisible: lastVisible }, () => {
+        this.arrowsToShow();
+      });
+    }
+
+    if (side === 'right') {
+      // get a date 10 days previous to current right side of visible
+      let { lastVisible, rawData } = this.state;
+      lastVisible = new moment(lastVisible);
+      lastVisible = lastVisible.add(10, 'days');
+
+      console.log('lastvisible', lastVisible.toISOString());
+      lastVisible = lastVisible.toISOString();
+      let tenDaysData = this.getTenDays(rawData, lastVisible);
+      let series = this.dataToRectLocs(tenDaysData);
+      let maxHeight = this.getMaxHeight(series);
+      this.setState({ series: series, maxHeight: maxHeight, recording: 'prestart', lastVisible: lastVisible }, () => {
+        this.arrowsToShow();
+      });
+    }
+
   }
 
   cheatTasks = () => {
@@ -311,6 +383,7 @@ export default class App extends Component {
           logout={this.logout}
           rightArrowVisible={rightArrowVisible}
           leftArrowVisible={leftArrowVisible}
+          handleScrollButtons={this.handleScrollButtons}
         />
         <Switch>
           <Route

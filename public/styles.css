@@ -22,7 +22,7 @@ img {
   font-size: 20px;
 }
 #leftButton {
-
+  margin-right: 30px;
 }
 
 #rightButton {
@@ -35,11 +35,12 @@ img {
 
 #graph {
   margin-top: 5px;
-  margin-left: 5px;
+  margin-left: 10px;
   margin-right: auto;
   width: 95%;
   height: 385px;
   padding: auto;
+  max-width: 800px
 }
 
 .largeText {
@@ -160,9 +161,12 @@ button {
 
 .App-header {
   background-color: rgba(150, 100, 200, .5);
-  {/*height: 25px; */}
   padding: 0px;
   color: white;
+  align-content: center;
+}
+
+.main {
   align-content: center;
 }
 

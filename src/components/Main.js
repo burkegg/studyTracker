@@ -89,7 +89,7 @@ export default class Main extends Component {
       return <Redirect to={{ pathname: '/Intro' }} />
     } else {
       return(
-        <div>
+        <div id="main">
           <div id="graph">
             <Graph series={series} graphHeight={graphHeight} width={width} maxHeight={maxHeight}/>
           </div>

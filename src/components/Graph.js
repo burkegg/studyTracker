@@ -29,7 +29,6 @@ export default class Graph extends Component {
       // ==========  PUT IN INSTRUCTIONS FOR NO GRAPH DATA ===============
       return(<div>When you're ready to start working, just hit start!  Remember to pause when you get distracted.</div>)
     }
-
     if (width < 100) {
       width = 300;
     }
@@ -38,7 +37,10 @@ export default class Graph extends Component {
     }
   
     let yFactor = (graphHeight - 50) / maxHeight;
-    let xFactor = (width - 20) / 10;
+
+    // what is xFactor
+    // testing
+    let xFactor = (width - 25) / 10;
     let zero = graphHeight - 50;
     let style;
     if (width < 280) {
