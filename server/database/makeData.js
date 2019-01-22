@@ -19,8 +19,8 @@ let username = 'Mr. T. Roll'
 let _id = '5c3d3a304394f54961068c4a';
 
 
-let startDate = '2019-01-01';
-let daysToPost = 40;
+let startDate = '2018-10-01';
+let daysToPost = 60;
 var makeDates = function(numDates, start) {
   let dates = [];
   let s = moment(start);
@@ -53,6 +53,13 @@ let makeAll = function(datesArr, userID) {
       Science: 40 - Math.ceil(Math.random() * 30),
     }
     for (let task in taskTimes){
+      if (moment(datesArr[dayIdx]).day() === 5 && task === 'Math') {
+        continue;
+      }
+      if (moment(datesArr[dayIdx]).day() === 5 && task === 'Science') {
+        continue;
+      }
+      
       let tempTask = {userID: userID, subject: task, taskDate: datesArr[dayIdx], duration: taskTimes[task], assign: null, notes: null};
       allTasks.push(tempTask);
     }
