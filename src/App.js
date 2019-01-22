@@ -31,8 +31,20 @@ export default class App extends Component {
       leftArrowVisible: false,
       rightArrowVisible: false,
       allDates:[],
+      showPopup: false,
+      popSubject: null,
+      popAssign: null,
+      popDur: null,
+      popDate: null,
     };
   };
+
+  togglePopup = (subject, taskDate, assign, duration) => {
+    let { showPopup } = this.state;
+    this.setState({ showPopup: !showPopup });
+    console.log('inside togglePopup()', subject, taskDate, assign);
+    this.setState({ popSubject: subject, popAssign: assign, popDur: duration, popDate: taskDate })
+  }
 
   updateUser = (userObject) => {
     this.setState(userObject);
@@ -62,7 +74,7 @@ export default class App extends Component {
       date: toPost.date,
       duration: toPost.duration,
       subject: toPost.subject,
-      assign: toPost.notes,
+      assign: toPost.assign,
       notes: toPost.notes,
     })
     .then(() => {
@@ -104,8 +116,6 @@ export default class App extends Component {
     for (let idx = data.length - 1; idx >= 0; idx--) {
       if (moment(data[idx].taskDate).isSame(lastDay, 'day')) {
         endSubset = idx;
-        console.log(data);
-        console.log(idx);
         break;
         }
     }
@@ -128,9 +138,7 @@ export default class App extends Component {
     //if (lastDay === undefined) {
       let firstVisible = outgoingData[0].taskDate;
       let lastVisible = outgoingData[outgoingData.length - 1].taskDate;
-      this.setState({firstVisible: firstVisible, lastVisible: lastVisible}, ()=>{
-        console.log('setting first and last vis',firstVisible, lastVisible);
-      });
+      this.setState({firstVisible: firstVisible, lastVisible: lastVisible});
     //}
     return outgoingData
   }
@@ -143,7 +151,6 @@ export default class App extends Component {
 
   arrowsToShow() {
     let { firstVisible, lastVisible, rawData } = this.state;
-    console.log('arrowsToShow', 'firstVisible', firstVisible, 'lastVisible', lastVisible);
     // determine left arrow
     if (!rawData || !firstVisible || !lastVisible) return;
     let rawStart = rawData[0].taskDate;
@@ -160,7 +167,6 @@ export default class App extends Component {
     rawEnd = new Date(rawEnd).toISOString();
     firstVisible = new Date(firstVisible).toISOString();
     lastVisible = new Date(lastVisible).toISOString();
-    console.log('testing left arrow', moment(rawStart).isBefore(firstVisible));
     if (moment(rawStart).isBefore(firstVisible)) {
       this.setState({ leftArrowVisible: true }, ()=>{console.log('state leftArrowVisible:', this.state.leftArrowVisible)});
     } else {
@@ -234,7 +240,7 @@ export default class App extends Component {
           loggedIn: true,
           username: response.data.user.username,
           userID: response.data.user._id,
-        }, ()=>{console.log('state was updated with  user data', this.state.loggedIn, this.state.username)})
+        })
       } else {
         this.setState({
           loggedIn: false,
@@ -303,6 +309,24 @@ export default class App extends Component {
     let series = stack(formatData);
     return series;
   }
+
+  handleTaskClick = (subject, taskDate, id) => {
+    console.log('inside handleTaskClick', 'subject', subject, 'taskDate', taskDate, 'domid', id);
+    const { series, rawData } = this.state;
+    console.log(rawData);
+    let taskMoment = moment(taskDate);
+    for (let i = 0; i < rawData.length; i++) {
+      let tempDate = new Date(rawData[i].taskDate).toISOString().slice(0, 10);
+      tempDate = this.replaceDashes(tempDate);
+      let rawMoment = moment(tempDate);
+      // console.log(rawMoment);
+      if (rawData[i].subject === subject && taskMoment.isSame(rawMoment, 'day')) {
+        console.log('found one', subject, taskDate, rawData[i].assign);
+        this.togglePopup(subject, taskDate, rawData[i].assign, rawData[i].duration);
+      }
+    }
+    // Easier cheat:  if the date and subject match, get the assignment from state
+  }
   
   componentDidMount() {
     this.getUser()
@@ -310,38 +334,28 @@ export default class App extends Component {
   }
 
   handleScrollButtons = (side) => {
-    console.log(side);
+    let { lastVisible, rawData } = this.state;
+    lastVisible = new moment(lastVisible);
+
     if (side === 'left') {
       // get a date 10 days previous to current right side of visible
-      let { lastVisible, rawData } = this.state;
-      lastVisible = new moment(lastVisible);
+      
       lastVisible = lastVisible.subtract(10, 'days');
-
-      console.log('lastvisible', lastVisible.toISOString());
-      lastVisible = lastVisible.toISOString();
-      let tenDaysData = this.getTenDays(rawData, lastVisible);
-      let series = this.dataToRectLocs(tenDaysData);
-      let maxHeight = this.getMaxHeight(series);
-      this.setState({ series: series, maxHeight: maxHeight, recording: 'prestart', lastVisible: lastVisible }, () => {
-        this.arrowsToShow();
-      });
     }
-
-    if (side === 'right') {
+    else if (side === 'right') {
       // get a date 10 days previous to current right side of visible
-      let { lastVisible, rawData } = this.state;
-      lastVisible = new moment(lastVisible);
       lastVisible = lastVisible.add(10, 'days');
-
-      console.log('lastvisible', lastVisible.toISOString());
-      lastVisible = lastVisible.toISOString();
-      let tenDaysData = this.getTenDays(rawData, lastVisible);
-      let series = this.dataToRectLocs(tenDaysData);
-      let maxHeight = this.getMaxHeight(series);
-      this.setState({ series: series, maxHeight: maxHeight, recording: 'prestart', lastVisible: lastVisible }, () => {
-        this.arrowsToShow();
-      });
+    } else {
+      console.log('Only left and right are allowed in handleScrollButtons');
     }
+
+    lastVisible = lastVisible.toISOString();
+    let tenDaysData = this.getTenDays(rawData, lastVisible);
+    let series = this.dataToRectLocs(tenDaysData);
+    let maxHeight = this.getMaxHeight(series);
+    this.setState({ series: series, maxHeight: maxHeight, recording: 'prestart', lastVisible: lastVisible }, () => {
+      this.arrowsToShow();
+    });
 
   }
 
@@ -360,16 +374,22 @@ export default class App extends Component {
     if (minutesTaken < 1) {
       return;
     }
-    for (let idx = data.length - 1; idx >= 0; idx--) {
-      if (data[idx].date === formattedDate && data[idx].subject === courseName) {
-        let tempDataObj = data[idx]
-        tempDataObj.duration = tempDataObj.duration + minutesTaken;
-        tempDataObj.notes = tempDataObj.notes + notes;
-        data[idx] = tempDataObj;
-        return;
-      }
-    }
-    let addTask = {userID: userID, date: formattedDate, duration: minutesTaken, subject: courseName, notes: notes};
+    // for (let idx = data.length - 1; idx >= 0; idx--) {
+    //   if (data[idx].date === formattedDate && data[idx].subject === courseName) {
+    //     let tempDataObj = data[idx]
+    //     tempDataObj.duration = tempDataObj.duration + minutesTaken;
+    //     tempDataObj.notes = tempDataObj.notes + notes;
+    //     data[idx] = tempDataObj;
+    //     return;
+    //   }
+    // }
+    let addTask = {
+      userID: userID,
+      date: formattedDate,
+      duration: minutesTaken,
+      subject: courseName,
+      assign: assignment,
+      notes: notes};
     this.apiPost(addTask);
     this.setState({ intervalSeconds: 0 });
   }
@@ -389,11 +409,18 @@ export default class App extends Component {
           <Route
             exact path="/"
             render={props => <Main {...props}
+            showPopup={this.state.showPopup}
+            togglePopup={this.togglePopup}
+            handleTaskClick={this.handleTaskClick}
             cheatTasks={this.cheatTasks}
             series={series}
             handleNewTask={this.handleNewTask}
             loggedIn={loggedIn}
             maxHeight={maxHeight}
+            popSubject={this.state.popSubject}
+            popDate={this.state.popDate}
+            popAssign={this.state.popAssign}
+            popDur={this.state.popDur}
           />}
           />
           <Route

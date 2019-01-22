@@ -112,40 +112,54 @@ export default class Graph extends Component {
     let bars = () => {
       return series.map((group, subj) => {
         return group.map((datapoint, idx) => {
+
           let size = datapoint[1] - datapoint[0];
           let course = group.key;
           let longKey = course.substring(0, 15);
           let shortKey = course.substring(0, 3);
           let midpoint = zero - (datapoint[0] + datapoint[1]) / 2 * yFactor;
+          let taskDate = datapoint.data.date;
+          let id = 'rect'+idx;
           if (size >= 25) {
-            return ( 
-              <g>
+            return (
+              <g id={id}>
                 <rect
-                x={xFactor * idx} y={zero - (yFactor * datapoint[1])}
+                  onClick={()=>{this.props.handleTaskClick(course, taskDate, id)}}
+                  x={xFactor * idx} y={zero - (yFactor * datapoint[1])}
                   height={yFactor * (datapoint[1] - datapoint[0])}
                   width={barWidth} fill={this.colorPicker(subj)}
                   strokeWidth='.4' stroke='black' fillOpacity='0.3' rx='1' ry='1'className='graphRect' />
-                <text x={xFactor * idx + 12} y={midpoint + 3} 
-                writingMode='tb-rl' textAnchor='middle'>
+                <text
+                  onClick={()=>{this.props.handleTaskClick(course, taskDate, id)}}
+                  x={xFactor * idx + 12}
+                  y={midpoint + 3} 
+                  writingMode='tb-rl' textAnchor='middle'>
                 {longKey}
                 </text>
               </g>
             )
           } else if (size >= 22) {
             return ( 
-              <g>
-                <rect x={xFactor * idx} y={zero - (yFactor * datapoint[1])}
+              <g id={id}>
+                <rect
+                  onClick={()=>{this.props.handleTaskClick(course, taskDate, id)}}
+                  x={xFactor * idx} y={zero - (yFactor * datapoint[1])}
                   height={yFactor * (datapoint[1] - datapoint[0])}
                   width={barWidth} fill={this.colorPicker(subj)}
                   strokeWidth='.4' stroke='black' fillOpacity='0.3' rx='1' ry='1'className='graphRect' />
-                <text x={xFactor * idx + 12} y={midpoint - 15} writingMode='tb-rl'>{shortKey}</text>
+                <text
+                  onClick={()=>{this.props.handleTaskClick(course, taskDate, id)}}
+                  x={xFactor * idx + 12}
+                  y={midpoint - 15}
+                  writingMode='tb-rl'>{shortKey}</text>
               </g>
           )
-
           } else if (size > 0) {
             return ( 
-            <g>
-            <rect x={xFactor * idx} y={zero - (yFactor * datapoint[1])}
+            <g id={id}>
+            <rect
+              onClick={()=>{this.props.handleTaskClick(course, taskDate, id)}}
+              x={xFactor * idx} y={zero - (yFactor * datapoint[1])}
               height={yFactor * (datapoint[1] - datapoint[0])}
               width={barWidth} fill={this.colorPicker(subj)}
               strokeWidth='.4' stroke='black' fillOpacity='0.3' rx='1' ry='1'className='graphRect' />

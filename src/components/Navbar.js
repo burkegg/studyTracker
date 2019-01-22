@@ -12,7 +12,7 @@ class Navbar extends Component {
 
   showLeft = () => {
     if (this.props.leftArrowVisible) {
-      return(<BackButton side={'left'} handleScrollButtons={this.props.handleScrollButtons}/>)
+      return(<BackButton side={'left'} className="scrollButton" handleScrollButtons={this.props.handleScrollButtons}/>)
     } else {
       return(<span></span>);
     }
@@ -20,7 +20,7 @@ class Navbar extends Component {
 
   showRight = () => {
     if (this.props.rightArrowVisible) {
-      return(<BackButton side={'right'} handleScrollButtons={this.props.handleScrollButtons}/>)
+      return(<BackButton side={'right'} className="scrollButton" handleScrollButtons={this.props.handleScrollButtons}/>)
     } else {
       return(<span></span>);
     }
@@ -36,13 +36,10 @@ class Navbar extends Component {
                 <div>
                 {this.showLeft()}
                   <Link to="#" className="btn" onClick={logout}>
-                    <span>logout</span>
+                    <span id="logoutSpan">logout</span>
                   </Link>
                   {this.showRight()}
                 </div>
-                {/*<div id = "forwardButton" className="scrollButton">
-                  <BackButton />
-                </div>*/}
               </div>
             ) : (
                 <section className="loggedOut">

@@ -6,6 +6,7 @@ import axios from 'axios';
 import * as d3 from 'd3';
 import BackButton from './BackButton';
 import moment from 'moment';
+import Popup from './Popup';
 
 export default class Main extends Component {
   constructor(props) {
@@ -91,7 +92,21 @@ export default class Main extends Component {
       return(
         <div id="main">
           <div id="graph">
-            <Graph series={series} graphHeight={graphHeight} width={width} maxHeight={maxHeight}/>
+            <Graph
+              series={series}
+              graphHeight={graphHeight}
+              width={width}
+              maxHeight={maxHeight}
+              handleTaskClick={this.props.handleTaskClick}
+            />
+            {this.props.showPopup ?
+            <Popup
+              popSubject={this.props.popSubject}
+              popAssign={this.props.popAssign}
+              popDur={this.props.popDur}
+              popDate={this.props.popDate}
+              togglePopup={this.props.togglePopup}
+            /> : null}
           </div>
           <div id="bottomBar">
             <BottomButtons
@@ -107,6 +122,7 @@ export default class Main extends Component {
               intervalSeconds={intervalSeconds}
             />
           </div>
+
         </div>
         )
     }

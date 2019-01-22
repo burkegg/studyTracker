@@ -19,11 +19,12 @@ let username = 'Mr. T. Roll'
 let _id = '5c3d3a304394f54961068c4a';
 
 
-let startDate = '2018-10-01';
-let daysToPost = 60;
+let CurrDate = '2019-01-22';
+let daysToPost = 3;
 var makeDates = function(numDates, start) {
   let dates = [];
   let s = moment(start);
+  s = s.subtract(numDates, 'days');
   for (let i = 0; i < numDates; i++) {
     let next = s.add(1, 'days');
     next = new Date(next.format().slice(0, 10));
@@ -33,11 +34,11 @@ var makeDates = function(numDates, start) {
   return dates;
 }
 
-let days = makeDates(daysToPost, startDate);
+let days = makeDates(daysToPost, CurrDate);
 
 
 let makeOne = function(task) {
-  let entry = {userID: task.userID, taskDate: task.taskDate, duration: task.duration, subject: task.subject, assign: null, notes: '***TEST TEST***'};
+  let entry = {userID: task.userID, taskDate: task.taskDate, duration: task.duration, subject: task.subject, assign: 'This is a test to see how the assignment looks', notes: '***TEST TEST***'};
   let t = new Task(entry);
   t.save();
 }
@@ -59,7 +60,7 @@ let makeAll = function(datesArr, userID) {
       if (moment(datesArr[dayIdx]).day() === 5 && task === 'Science') {
         continue;
       }
-      
+
       let tempTask = {userID: userID, subject: task, taskDate: datesArr[dayIdx], duration: taskTimes[task], assign: null, notes: null};
       allTasks.push(tempTask);
     }
