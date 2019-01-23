@@ -20,7 +20,7 @@ let _id = '5c3d3a304394f54961068c4a';
 
 
 let CurrDate = '2019-01-22';
-let daysToPost = 3;
+let daysToPost = 60;
 var makeDates = function(numDates, start) {
   let dates = [];
   let s = moment(start);
@@ -34,15 +34,26 @@ var makeDates = function(numDates, start) {
   return dates;
 }
 
+let d = '2019-01-22';
+d = moment(d);
+d = new Date(d.format().slice(0, 10));
+
 let days = makeDates(daysToPost, CurrDate);
-
-
+let task1 = {
+  userID: '5c3d3a304394f54961068c4a',
+  taskDate: d,
+  duration: 35,
+  assign: 'Worksheet',
+  subject: 'Math',
+  notes: null
+}
 let makeOne = function(task) {
   let entry = {userID: task.userID, taskDate: task.taskDate, duration: task.duration, subject: task.subject, assign: 'This is a test to see how the assignment looks', notes: '***TEST TEST***'};
   let t = new Task(entry);
   t.save();
 }
 
+//makeOne(task1);
 
 let makeAll = function(datesArr, userID) {
   let allTasks = [];
@@ -65,7 +76,7 @@ let makeAll = function(datesArr, userID) {
       allTasks.push(tempTask);
     }
   }
-  console.log(allTasks);
+  //console.log(allTasks);
   let counter = 0;
   let inc = () =>{counter++}
   while (counter < allTasks.length) {

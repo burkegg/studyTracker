@@ -28,7 +28,7 @@ app.use('/intro', express.static(path.join(__dirname, '../build')));
 
 app.use(
   session({
-    secret: 'pass', //pick a random string to make the hash that is generated secure
+    secret: '', //pick a random string to make the hash that is generated secure
     resave: false, //required
     saveUninitialized: false //required
   })
