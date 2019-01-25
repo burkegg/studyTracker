@@ -42,7 +42,6 @@ export default class App extends Component {
   togglePopup = (subject, taskDate, assign, duration) => {
     let { showPopup } = this.state;
     this.setState({ showPopup: !showPopup });
-    console.log('inside togglePopup()', subject, taskDate, assign);
     this.setState({ popSubject: subject, popAssign: assign, popDur: duration, popDate: taskDate })
   }
 
@@ -51,7 +50,6 @@ export default class App extends Component {
   }
 
   logout = (event) => {
-    console.log('logging out?');
     event.preventDefault()
     axios.post('/user/logout').then(response => {
       if (response.status === 200) {
@@ -168,14 +166,14 @@ export default class App extends Component {
     firstVisible = new Date(firstVisible).toISOString();
     lastVisible = new Date(lastVisible).toISOString();
     if (moment(rawStart).isBefore(firstVisible)) {
-      this.setState({ leftArrowVisible: true }, ()=>{console.log('state leftArrowVisible:', this.state.leftArrowVisible)});
+      this.setState({ leftArrowVisible: true });
     } else {
-      this.setState({ leftArrowVisible: false }, ()=>{console.log('state leftArrowVisible:', this.state.leftArrowVisible)});
+      this.setState({ leftArrowVisible: false });
     }
     if (moment(rawEnd).isAfter(lastVisible)) {
-      this.setState({ rightArrowVisible: true }, ()=>{console.log('state rightArrowVisible:', this.state.rightArrowVisible)});
+      this.setState({ rightArrowVisible: true });
     } else {
-      this.setState({ rightArrowVisible: false }, ()=>{console.log('state rightArrowVisible:', this.state.rightArrowVisible)});
+      this.setState({ rightArrowVisible: false });
     }
   }
 
@@ -232,7 +230,6 @@ export default class App extends Component {
   }
 
   getUser = (username = this.state.username, password = this.state.password) => {
-    console.log('getusercalled')
     axios.get('/user/')
     .then(response => {
       if (response.data.user !== null && response.data.user !== undefined) {
@@ -311,21 +308,16 @@ export default class App extends Component {
   }
 
   handleTaskClick = (subject, taskDate, id) => {
-    console.log('inside handleTaskClick', 'subject', subject, 'taskDate', taskDate, 'domid', id);
     const { series, rawData } = this.state;
-    console.log(rawData);
     let taskMoment = moment(taskDate);
     for (let i = 0; i < rawData.length; i++) {
       let tempDate = new Date(rawData[i].taskDate).toISOString().slice(0, 10);
       tempDate = this.replaceDashes(tempDate);
       let rawMoment = moment(tempDate);
-      // console.log(rawMoment);
       if (rawData[i].subject === subject && taskMoment.isSame(rawMoment, 'day')) {
-        console.log('found one', subject, taskDate, rawData[i].assign);
         this.togglePopup(subject, taskDate, rawData[i].assign, rawData[i].duration);
       }
     }
-    // Easier cheat:  if the date and subject match, get the assignment from state
   }
   
   componentDidMount() {
