@@ -45,7 +45,7 @@ export default class Main extends Component {
   }
 
   handleFinishButton = (e) => {
-    this.setState({recording: 'finalize', })
+    this.setState({recording: 'finalize' })
   }
 
   handleCancelButton = (e) => {
@@ -78,14 +78,14 @@ export default class Main extends Component {
 
   passUpSubmit = (name, assign, notes) => {
     const { intervalSeconds } = this.state;
-    const { handleNewTask } = this.props;
-    handleNewTask(name, assign, notes, intervalSeconds);
-    this.setState({ recording: 'prestart' })
+    const { fTask } = this.props;
+    this.props.handleNewTask(name, assign, notes, intervalSeconds);
+    this.setState({ recording: 'prestart', intervalSeconds: 0 })
   }
 
   render() {
     const { recording, graphHeight, width, intervalSeconds } = this.state;
-    const { loggedIn, series, maxHeight} = this.props;
+    const { loggedIn, series, maxHeight, handleNewTask } = this.props;
     if (!loggedIn) {
       return <Redirect to={{ pathname: '/Intro' }} />
     } else {
@@ -122,7 +122,6 @@ export default class Main extends Component {
               intervalSeconds={intervalSeconds}
             />
           </div>
-
         </div>
         )
     }

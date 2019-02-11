@@ -366,15 +366,7 @@ export default class App extends Component {
     if (minutesTaken < 1) {
       return;
     }
-    // for (let idx = data.length - 1; idx >= 0; idx--) {
-    //   if (data[idx].date === formattedDate && data[idx].subject === courseName) {
-    //     let tempDataObj = data[idx]
-    //     tempDataObj.duration = tempDataObj.duration + minutesTaken;
-    //     tempDataObj.notes = tempDataObj.notes + notes;
-    //     data[idx] = tempDataObj;
-    //     return;
-    //   }
-    // }
+    
     let addTask = {
       userID: userID,
       date: formattedDate,

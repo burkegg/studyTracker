@@ -164,9 +164,6 @@ export default class BottomButtons extends Component {
           </form>
         </div>
         )
-    
-
-
    }
   }
 }

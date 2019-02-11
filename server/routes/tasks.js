@@ -1,8 +1,6 @@
-// const taskRouter = require('express').Router();
 const express = require('express');
 const taskRouter = express.Router()
 const Task = require('../database/models/task');
-// const { getTasksByUser, postTaskByUser } = require('../../db/dbAPI');
 const passport = require('../passport');
 const testSafety = require('../util/safety');
 
@@ -11,9 +9,13 @@ taskRouter.get('/',
   (req, res) => {
     let userID = req.session.passport.user._id;
     Task.find({userID: userID}, (err, data) => {
-    res.send(data);
-  })
-});
+      if (err) {
+        res.sendStatus(500);
+      }
+      res.send(data);
+    })
+  }
+);
 
 // post a task to an existing user
 taskRouter.post('/',
